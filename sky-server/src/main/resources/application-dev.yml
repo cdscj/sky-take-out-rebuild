@@ -8,11 +8,14 @@ sky:
     password: 100100yht
   alioss:
     endpoint: oss-cn-beijing.aliyuncs.com
-    access-key-id: LTAI5tPeFLzsPPT8gG3LPW64
-    access-key-secret: U6k1brOZ8gaOIXv3nXbulGTUzy6Pd7
-    bucket-name: sky-itcast
+    access-key-id: LTAI5tP7fu1GbsLpoCZfbKar
+    access-key-secret: 349tbgjvplxwO4HqVQUwda5IJ2sZps
+    bucket-name: skyproject2
   redis:
     host: 192.168.179.128
     port: 6379
     password: 100100yht
     database: 10
+  wechat:
+    appid: wxbe194263f7287261
+    secret: cf7da03f3f02d24d430163781440c77c
