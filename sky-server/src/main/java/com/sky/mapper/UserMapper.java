@@ -19,6 +19,5 @@ public interface UserMapper {
      * 插入数据
      * @param user
      */
-    @Select("")
     void insert(User user);
 }
