@@ -134,26 +134,8 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     public OrderPaymentVO payment(OrdersPaymentDTO ordersPaymentDTO) throws Exception {
-//        // 当前登录用户id
-//        Long userId = BaseContext.getCurrentId();
-//        User user = userMapper.getById(userId);
-//
-//        //调用微信支付接口，生成预支付交易单
-//        JSONObject jsonObject = weChatPayUtil.pay(
-//                ordersPaymentDTO.getOrderNumber(), //商户订单号
-//                new BigDecimal(0.01), //支付金额，单位 元
-//                "苍穹外卖订单", //商品描述
-//                user.getOpenid() //微信用户的openid
-//        );
-//
-//        if (jsonObject.getString("code") != null && jsonObject.getString("code").equals("ORDERPAID")) {
-//            throw new OrderBusinessException("该订单已支付");
-//        }
-//
-//        OrderPaymentVO vo = jsonObject.toJavaObject(OrderPaymentVO.class);
-//        vo.setPackageStr(jsonObject.getString("package"));
 
-        log.info("跳过微信支付，支付成功");
+        log.info("直接支付");
         paySuccess(ordersPaymentDTO.getOrderNumber());
 
         return new OrderPaymentVO();
@@ -267,12 +249,6 @@ public class OrderServiceImpl implements OrderService {
 
         // 订单处于待接单状态下取消，需要进行退款
         if (ordersDB.getStatus().equals(Orders.TO_BE_CONFIRMED)) {
-            //调用微信支付退款接口
-//            weChatPayUtil.refund(
-//                    ordersDB.getNumber(), //商户订单号
-//                    ordersDB.getNumber(), //商户退款单号
-//                    new BigDecimal(0.01),//退款金额，单位 元
-//                    new BigDecimal(0.01));//原订单金额
 
             //支付状态修改为 退款
             orders.setPayStatus(Orders.REFUND);
