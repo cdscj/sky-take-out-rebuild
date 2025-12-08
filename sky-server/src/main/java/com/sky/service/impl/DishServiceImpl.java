@@ -187,10 +187,10 @@ public class DishServiceImpl implements DishService {
         dishMapper.update(dish);
 
         if (status == StatusConstant.DISABLE) {
-            // 如果是停售操作，还需要将包含当前菜品的套餐也停售
+            // 如果是停售，当前菜品的套餐也停售
             List<Long> dishIds = new ArrayList<>();
             dishIds.add(id);
-            // select setmeal_id from setmeal_dish where dish_id in (?,?,?)
+
             List<Long> setmealIds = setmealDishMapper.getSetmealIdsByDishIds(dishIds);
             if (setmealIds != null && setmealIds.size() > 0) {
                 for (Long setmealId : setmealIds) {
