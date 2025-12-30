@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.net.wenxin.system.mapper.RoleUserMapper">
+    
+    <resultMap type="RoleUser" id="TbRoleUserResult">
+        <result property="id"    column="id"    />
+        <result property="roleId"    column="role_id"    />
+        <result property="userId"    column="user_id"    />
+    </resultMap>
+
+    <sql id="selectTbRoleUserVo">
+        select id, role_id, user_id from tb_role_user
+    </sql>
+
+    <select id="selectTbRoleUserList" parameterType="RoleUser" resultMap="TbRoleUserResult">
+        <include refid="selectTbRoleUserVo"/>
+        <where>  
+            <if test="roleId != null  and roleId != ''"> and role_id = #{roleId}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+        </where>
+    </select>
+    
+    <select id="selectTbRoleUserById" parameterType="String" resultMap="TbRoleUserResult">
+        <include refid="selectTbRoleUserVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTbRoleUser" parameterType="RoleUser">
+        insert into tb_role_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="roleId != null">role_id,</if>
+            <if test="userId != null">user_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="roleId != null">#{roleId},</if>
+            <if test="userId != null">#{userId},</if>
+         </trim>
+    </insert>
+
+    <insert id="batchRoleUser">
+        insert into tb_role_user(id,role_id,user_id) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.roleId},#{item.userId})
+        </foreach>
+    </insert>
+
+    <update id="updateTbRoleUser" parameterType="RoleUser">
+        update tb_role_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="roleId != null">role_id = #{roleId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbRoleUserById" parameterType="String">
+        delete from tb_role_user where id = #{id}
+    </delete>
+
+    <delete id="deleteTbRoleUserByIds" parameterType="String">
+        delete from tb_role_user where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

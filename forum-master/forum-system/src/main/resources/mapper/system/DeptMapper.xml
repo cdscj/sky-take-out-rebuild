@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.net.wenxin.system.mapper.DeptMapper">
+
+    <resultMap type="Dept" id="TbDeptResult">
+        <result property="id"    column="id"    />
+        <result property="code"    column="code"    />
+        <result property="name"    column="name"    />
+        <result property="pcode"    column="pcode"    />
+        <result property="path"    column="path"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTbDeptVo">
+        select id, code, name, pcode, path, remark, create_by, create_time, update_by, update_time from tb_dept
+    </sql>
+
+    <select id="selectTbDeptList" parameterType="Dept" resultMap="TbDeptResult">
+        <include refid="selectTbDeptVo"/>
+        <where>
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="pcode != null  and pcode != ''"> and pcode = #{pcode}</if>
+            <if test="path != null  and path != ''"> and path = #{path}</if>
+        </where>
+        order by code
+    </select>
+
+    <select id="selectTbDeptById" parameterType="String" resultMap="TbDeptResult">
+        <include refid="selectTbDeptVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDeptByCode" parameterType="String" resultMap="TbDeptResult">
+        <include refid="selectTbDeptVo"/>
+        where code = #{code}
+    </select>
+
+    <insert id="insertTbDept" parameterType="Dept">
+        insert into tb_dept
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="code != null">code,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="pcode != null">pcode,</if>
+            <if test="path != null">path,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="code != null">#{code},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="pcode != null">#{pcode},</if>
+            <if test="path != null">#{path},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTbDept" parameterType="Dept">
+        update tb_dept
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null">code = #{code},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="pcode != null">pcode = #{pcode},</if>
+            <if test="path != null">path = #{path},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTbDeptById" parameterType="String">
+        delete from tb_dept where id = #{id}
+    </delete>
+
+    <delete id="deleteTbDeptByIds" parameterType="String">
+        delete from tb_dept where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.net.wenxin.service.mapper.LabelMapper">
+    
+    <resultMap type="Label" id="LabelResult">
+        <result property="id"    column="id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="labelName"    column="label_name"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="labelImg"    column="label_img"    />
+        <result property="labelExplain"    column="label_explain"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectLabelVo">
+        select id, parent_id, label_name, order_num, label_img, label_explain, status, del_flag, create_by, create_time, update_by, update_time from tb_label
+    </sql>
+
+    <select id="selectLabelList" parameterType="Label" resultMap="LabelResult">
+        <include refid="selectLabelVo"/>
+        <where>
+            del_flag != '2'
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="labelName != null  and labelName != ''"> and label_name like concat('%', #{labelName}, '%')</if>
+            <if test="orderNum != null "> and order_num = #{orderNum}</if>
+            <if test="labelImg != null  and labelImg != ''"> and label_img = #{labelImg}</if>
+            <if test="labelExplain != null  and labelExplain != ''"> and label_explain = #{labelExplain}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+        order by order_num
+    </select>
+    
+    <select id="selectLabelById" parameterType="Long" resultMap="LabelResult">
+        <include refid="selectLabelVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertLabel" parameterType="Label" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_label
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">parent_id,</if>
+            <if test="labelName != null">label_name,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="labelImg != null">label_img,</if>
+            <if test="labelExplain != null">label_explain,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">#{parentId},</if>
+            <if test="labelName != null">#{labelName},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="labelImg != null">#{labelImg},</if>
+            <if test="labelExplain != null">#{labelExplain},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLabel" parameterType="Label">
+        update tb_label
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="labelName != null">label_name = #{labelName},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="labelImg != null">label_img = #{labelImg},</if>
+            <if test="labelExplain != null">label_explain = #{labelExplain},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteLabelById" parameterType="Long">
+        update tb_label set del_flag = '2' where id = #{id}
+    </update>
+
+    <update id="deleteLabelByIds" parameterType="String">
+        update tb_label set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

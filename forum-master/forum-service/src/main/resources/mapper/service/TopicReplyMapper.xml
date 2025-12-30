@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.net.wenxin.service.mapper.TopicReplyMapper">
+    
+    <resultMap type="TopicReply" id="TopicReplyResult">
+        <result property="id"    column="id"    />
+        <result property="topicId"    column="topic_id"    />
+        <result property="replyMainId"    column="reply_main_id"    />
+        <result property="replyId"    column="reply_id"    />
+        <result property="replyerId"    column="replyer_id"    />
+        <result property="replyContent"    column="reply_content"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTopicReplyVo">
+        select id, topic_id, reply_main_id, reply_id, replyer_id, reply_content, del_flag, create_by, create_time, update_by, update_time from tb_topic_reply
+    </sql>
+
+    <select id="selectTopicReplyList" parameterType="TopicReply" resultMap="TopicReplyResult">
+        <include refid="selectTopicReplyVo"/>
+        <where>
+            <if test="replyMainId != null "> and reply_main_id = #{replyMainId}</if>
+            <if test="topicId != null "> and topic_id = #{topicId}</if>
+            <if test="replyId != null "> and reply_id = #{replyId}</if>
+            <if test="type != null "> and reply_main_id is null</if>
+            <if test="replyerId != null  and replyerId != ''"> and replyer_id = #{replyerId}</if>
+        </where>
+        order by create_time
+    </select>
+    
+    <select id="selectTopicReplyById" parameterType="Long" resultMap="TopicReplyResult">
+        <include refid="selectTopicReplyVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTopicReply" parameterType="TopicReply" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_topic_reply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="topicId != null">topic_id,</if>
+            <if test="replyMainId != null">reply_main_id,</if>
+            <if test="replyId != null">reply_id,</if>
+            <if test="replyerId != null">replyer_id,</if>
+            <if test="replyContent != null">reply_content,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="topicId != null">#{topicId},</if>
+            <if test="replyMainId != null">#{replyMainId},</if>
+            <if test="replyId != null">#{replyId},</if>
+            <if test="replyerId != null">#{replyerId},</if>
+            <if test="replyContent != null">#{replyContent},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTopicReply" parameterType="TopicReply">
+        update tb_topic_reply
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="topicId != null">topic_id = #{topicId},</if>
+            <if test="replyMainId != null">reply_id = #{replyMainId},</if>
+            <if test="replyId != null">reply_main_id = #{replyId},</if>
+            <if test="replyerId != null">replyer_id = #{replyerId},</if>
+            <if test="replyContent != null">reply_content = #{replyContent},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTopicReplyById" parameterType="Long">
+        update  tb_topic_reply set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteTopicReplyByIds" parameterType="String">
+        update  tb_topic_reply set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectTopicReplyVoList" parameterType="TopicReplyVo" resultType="TopicReplyVo">
+        select a.id,a.reply_content,a.topic_id,b.topic_content,b.title topic_title,
+        a.replyer_id,c.nick_name replyer_name,a.del_flag,a.create_time
+        from tb_topic_reply a
+        left join tb_topic_info b on a.topic_id = b.id
+        left join tb_user c on a.replyer_id = c.user_name
+        <where>
+            <if test="topicContent != null and topicContent != ''">
+                and b.topic_content like concat('%',#{topicContent},'%')
+            </if>
+            <if test="topicTitle != null and topicTitle != ''">
+                and b.title like concat('%',#{topicTitle},'%')
+            </if>
+            <if test="replyContent != null and replyContent != ''">
+                and a.reply_content like concat('%',#{replyContent},'%')
+            </if>
+            <if test="replyerName != null and replyerName != ''">
+                and c.nick_name like concat('%',#{replyerName},'%')
+            </if>
+            <if test="delFlag != null and delFlag != ''">
+                and a.del_flag = #{delFlag}
+            </if>
+        </where>
+    </select>
+</mapper>

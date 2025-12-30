@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.net.wenxin.service.mapper.OperLogMapper">
+    
+    <resultMap type="OperLog" id="OperLogResult">
+        <result property="id"    column="id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="model"    column="model"    />
+        <result property="businessType"    column="business_type"    />
+        <result property="title"    column="title"    />
+        <result property="operIp"    column="oper_ip"    />
+        <result property="operLocation"    column="oper_location"    />
+        <result property="operParam"    column="oper_param"    />
+        <result property="jsonResult"    column="json_result"    />
+        <result property="status"    column="status"    />
+        <result property="errorMsg"    column="error_msg"    />
+        <result property="operTime"    column="oper_time"    />
+    </resultMap>
+
+    <sql id="selectOperLogVo">
+        select id, user_name, model, business_type, title, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time from tb_oper_log
+    </sql>
+
+    <select id="selectOperLogList" parameterType="OperLog" resultMap="OperLogResult">
+        <include refid="selectOperLogVo"/>
+        <where>  
+            <if test="userName != null "> and user_name = #{userName}</if>
+            <if test="model != null "> and model = #{model}</if>
+            <if test="businessType != null "> and business_type = #{businessType}</if>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="operIp != null  and operIp != ''"> and oper_ip = #{operIp}</if>
+            <if test="operLocation != null  and operLocation != ''"> and oper_location = #{operLocation}</if>
+            <if test="operParam != null  and operParam != ''"> and oper_param = #{operParam}</if>
+            <if test="jsonResult != null  and jsonResult != ''"> and json_result = #{jsonResult}</if>
+            <if test="errorMsg != null  and errorMsg != ''"> and error_msg = #{errorMsg}</if>
+            <if test="operTime != null "> and oper_time = #{operTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectOperLogById" parameterType="Long" resultMap="OperLogResult">
+        <include refid="selectOperLogVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertOperLog" parameterType="OperLog" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_oper_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null">user_name,</if>
+            <if test="model != null">model,</if>
+            <if test="businessType != null">business_type,</if>
+            <if test="title != null">title,</if>
+            <if test="operIp != null">oper_ip,</if>
+            <if test="operLocation != null">oper_location,</if>
+            <if test="operParam != null">oper_param,</if>
+            <if test="jsonResult != null">json_result,</if>
+            <if test="status != null">status,</if>
+            <if test="errorMsg != null">error_msg,</if>
+            <if test="operTime != null">oper_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userName != null">#{userName},</if>
+            <if test="model != null">#{model},</if>
+            <if test="businessType != null">#{businessType},</if>
+            <if test="title != null">#{title},</if>
+            <if test="operIp != null">#{operIp},</if>
+            <if test="operLocation != null">#{operLocation},</if>
+            <if test="operParam != null">#{operParam},</if>
+            <if test="jsonResult != null">#{jsonResult},</if>
+            <if test="status != null">#{status},</if>
+            <if test="errorMsg != null">#{errorMsg},</if>
+            <if test="operTime != null">#{operTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOperLog" parameterType="OperLog">
+        update tb_oper_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="model != null">model = #{model},</if>
+            <if test="businessType != null">business_type = #{businessType},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="operIp != null">oper_ip = #{operIp},</if>
+            <if test="operLocation != null">oper_location = #{operLocation},</if>
+            <if test="operParam != null">oper_param = #{operParam},</if>
+            <if test="jsonResult != null">json_result = #{jsonResult},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="errorMsg != null">error_msg = #{errorMsg},</if>
+            <if test="operTime != null">oper_time = #{operTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOperLogById" parameterType="Long">
+        delete from tb_oper_log where id = #{id}
+    </delete>
+
+    <delete id="deleteOperLogByIds" parameterType="String">
+        delete from tb_oper_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="cleanOperLog">
+        truncate table tb_oper_log
+    </update>
+</mapper>

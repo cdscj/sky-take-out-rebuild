@@ -1,0 +1,2 @@
+Application Version: ${uias.version}
+Spring Boot Version: ${spring-boot.version}

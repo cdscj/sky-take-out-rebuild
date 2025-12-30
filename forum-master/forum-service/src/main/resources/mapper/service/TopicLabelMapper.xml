@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.net.wenxin.service.mapper.TopicLabelMapper">
+
+    <resultMap type="TopicLabel" id="TopicLabelResult">
+        <result property="topicId"    column="topic_id"    />
+        <result property="labelId"    column="label_id"    />
+    </resultMap>
+
+    <sql id="selectTopicLabelVo">
+        select topic_id, label_id from tb_topic_label
+    </sql>
+
+    <select id="selectTopicLabelList" parameterType="TopicLabel" resultMap="TopicLabelResult">
+        <include refid="selectTopicLabelVo"/>
+        <where>
+        </where>
+    </select>
+
+    <select id="selectTopicLabelVoList" parameterType="Long" resultType="cn.net.wenxin.service.domain.vo.TopicLabelVo">
+        select a.topic_id, a.label_id,b.label_name,b.parent_id,b.label_img
+        from tb_topic_label a
+        left join tb_label b
+        on a.label_id = b.id
+        where a.topic_id = #{topicId}
+    </select>
+
+    <select id="selectTopicLabelByTopicId" parameterType="Long" resultMap="TopicLabelResult">
+        <include refid="selectTopicLabelVo"/>
+        where topic_id = #{topicId}
+    </select>
+
+    <insert id="insertTopicLabel" parameterType="TopicLabel">
+        insert into tb_topic_label
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="topicId != null">topic_id,</if>
+            <if test="labelId != null">label_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="topicId != null">#{topicId},</if>
+            <if test="labelId != null">#{labelId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTopicLabel" parameterType="TopicLabel">
+        update tb_topic_label
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="labelId != null">label_id = #{labelId},</if>
+        </trim>
+        where topic_id = #{topicId}
+    </update>
+
+    <delete id="deleteTopicLabelByTopicId" parameterType="Long">
+        delete from tb_topic_label where topic_id = #{topicId}
+    </delete>
+
+    <delete id="deleteTopicLabelByTopicIds" parameterType="String">
+        delete from tb_topic_label where topic_id in
+        <foreach item="topicId" collection="array" open="(" separator="," close=")">
+            #{topicId}
+        </foreach>
+    </delete>
+</mapper>

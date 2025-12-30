@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.net.wenxin.service.mapper.UserPointsMapper">
+    
+    <resultMap type="UserPoints" id="UserPointsResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="currentPoint"    column="current_point"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectUserPointsVo">
+        select id, user_id, current_point, del_flag, create_by, create_time, update_by, update_time from tb_user_points
+    </sql>
+
+    <select id="selectUserPointsList" parameterType="UserPoints" resultMap="UserPointsResult">
+        <include refid="selectUserPointsVo"/>
+        <where>  
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="currentPoint != null "> and current_point = #{currentPoint}</if>
+        </where>
+    </select>
+    
+    <select id="selectUserPointsById" parameterType="Long" resultMap="UserPointsResult">
+        <include refid="selectUserPointsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertUserPoints" parameterType="UserPoints" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_user_points
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">user_id,</if>
+            <if test="currentPoint != null">current_point,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null and userId != ''">#{userId},</if>
+            <if test="currentPoint != null">#{currentPoint},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateUserPoints" parameterType="UserPoints">
+        update tb_user_points
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null and userId != ''">user_id = #{userId},</if>
+            <if test="currentPoint != null">current_point = #{currentPoint},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteUserPointsById" parameterType="Long">
+        delete from tb_user_points where id = #{id}
+    </delete>
+
+    <delete id="deleteUserPointsByIds" parameterType="String">
+        delete from tb_user_points where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectUserPointsByUserId" resultMap="UserPointsResult">
+        <include refid="selectUserPointsVo"/>
+        where user_id = #{userId}
+        and del_flag = '0'
+    </select>
+
+    <select id="getUserPointLevel" resultType="java.util.Map">
+        select b.icon,b.name,a.current_point point
+        from tb_user_points a
+        left join (select name,icon,points_min,points_max
+        from tb_level where status = '0' and del_flag = '0') b
+        on a.current_point between b.points_min and b.points_max
+        where a.user_id = #{userId} and a.del_flag = '0'
+    </select>
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.net.wenxin.service.mapper.LevelMapper">
+    
+    <resultMap type="Level" id="LevelResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="icon"    column="icon"    />
+        <result property="pointsMin"    column="points_min"    />
+        <result property="pointsMax"    column="points_max"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectLevelVo">
+        select id, name, icon, points_min, points_max, status, del_flag, create_by, create_time, update_by, update_time from tb_level
+    </sql>
+
+    <select id="selectLevelList" parameterType="Level" resultMap="LevelResult">
+        <include refid="selectLevelVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="icon != null  and icon != ''"> and icon = #{icon}</if>
+            <if test="pointsMin != null "> and points_min = #{pointsMin}</if>
+            <if test="pointsMax != null "> and points_max = #{pointsMax}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectLevelById" parameterType="Long" resultMap="LevelResult">
+        <include refid="selectLevelVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertLevel" parameterType="Level" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_level
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="icon != null">icon,</if>
+            <if test="pointsMin != null">points_min,</if>
+            <if test="pointsMax != null">points_max,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="icon != null">#{icon},</if>
+            <if test="pointsMin != null">#{pointsMin},</if>
+            <if test="pointsMax != null">#{pointsMax},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLevel" parameterType="Level">
+        update tb_level
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="pointsMin != null">points_min = #{pointsMin},</if>
+            <if test="pointsMax != null">points_max = #{pointsMax},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLevelById" parameterType="Long">
+        delete from tb_level where id = #{id}
+    </delete>
+
+    <delete id="deleteLevelByIds" parameterType="String">
+        delete from tb_level where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getCheckPointLevel" parameterType="Level" resultMap="LevelResult">
+        <include refid="selectLevelVo"/>
+            where status = '0' and del_flag = '0'
+            <if test="id != null  and id != ''"> and id = #{id}</if>
+            <if test="pointsMin != null ">
+                and points_min &gt;= #{pointsMin}
+                and points_max &lt;= #{pointsMin}
+            </if>
+            <if test="pointsMax != null ">
+                and points_min &gt;= #{pointsMax}
+                and points_max &lt;= #{pointsMax}
+            </if>
+            order by update_time desc
+            limit 1
+    </select>
+</mapper>

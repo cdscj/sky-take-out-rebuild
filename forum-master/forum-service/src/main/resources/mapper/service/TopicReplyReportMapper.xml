@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.net.wenxin.service.mapper.TopicReplyReportMapper">
+    
+    <resultMap type="TopicReplyReport" id="TopicReplyReportResult">
+        <result property="id"    column="id"    />
+        <result property="topicId"    column="topic_id"    />
+        <result property="replyId"    column="reply_id"    />
+        <result property="reportUser"    column="report_user"    />
+        <result property="reportExplain"    column="report_explain"    />
+        <result property="status"    column="status"    />
+        <result property="reportResult"    column="report_result"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTopicReplyReportVo">
+        select id, topic_id, reply_id, report_user, report_explain, status, report_result, result_status,del_flag, create_by, create_time, update_by, update_time from tb_topic_reply_report
+    </sql>
+
+    <select id="selectTopicReplyReportList" parameterType="TopicReplyReportVo" resultType="TopicReplyReportVo">
+        select a.topic_id, b.title topic_title, b.topic_content,
+        a.reply_id, c.reply_content,if(a.reply_id is null,1,2) type,
+        count(a.id) report_num,if(avg(a.status)=2,2,1) status
+        from tb_topic_reply_report a
+        left join tb_topic_info b on a.topic_id = b.id
+        left join tb_topic_reply c on a.reply_id = c.id
+        where a.del_flag = '0'
+        <if test="topicTitle != null ">
+        and (b.title like concat('%',#{topicTitle},'%')
+            or b.topic_content like concat('%',#{topicTitle},'%')
+            or c.reply_content like concat('%',#{topicTitle},'%')
+            or a.report_explain like concat('%',#{topicTitle},'%')
+            or a.report_user like concat('%',#{topicTitle},'%')
+            or a.report_result like concat('%',#{topicTitle},'%'))
+        </if>
+        <if test="status != null  and status != ''"> and a.status = #{status}</if>
+        <if test="type != null  and type != ''"> and if(a.reply_id is null,1,2) = #{type}</if>
+         group by a.topic_id,a.reply_id
+    </select>
+
+    <select id="selectReportUserList" parameterType="TopicReplyReportVo" resultType="TopicReplyReportVo">
+        select id,report_user, report_explain, status,
+        report_result,create_time, update_by, update_time
+        from tb_topic_reply_report
+        where del_flag = '0'
+        <if test="replyId != null and replyId != ''"> and reply_id = #{replyId}</if>
+        <if test="topicId != null  and topicId != ''"> and topic_id = #{topicId}
+            and reply_id is null</if>
+        <if test="status != null  and status != ''"> and status = #{status}</if>
+        <if test="reportExplain != null  and reportExplain != ''"> and report_explain like concat('%', #{reportExplain},'%')</if>
+        <if test="reportUser != null  and reportUser != ''"> and report_user like concat('%', #{reportUser},'%')</if>
+    </select>
+    
+    <select id="selectTopicReplyReportById" parameterType="Long" resultMap="TopicReplyReportResult">
+        <include refid="selectTopicReplyReportVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="getLatestInfo" resultMap="TopicReplyReportResult">
+        <include refid="selectTopicReplyReportVo"/>
+        <where>
+            <if test="replyId != null and replyId != ''"> and reply_id = #{replyId}</if>
+            <if test="topicId != null  and replyId == null"> and topic_id = #{topicId}
+                and reply_id is null</if>
+        </where>
+        order by update_time desc
+        limit 1
+    </select>
+        
+    <insert id="insertTopicReplyReport" parameterType="TopicReplyReport" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_topic_reply_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="topicId != null">topic_id,</if>
+            <if test="replyId != null">reply_id,</if>
+            <if test="reportUser != null">report_user,</if>
+            <if test="reportExplain != null">report_explain,</if>
+            <if test="status != null">status,</if>
+            <if test="reportResult != null">report_result,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="topicId != null">#{topicId},</if>
+            <if test="replyId != null">#{replyId},</if>
+            <if test="reportUser != null">#{reportUser},</if>
+            <if test="reportExplain != null">#{reportExplain},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reportResult != null">#{reportResult},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTopicReplyReport" parameterType="TopicReplyReport">
+        update tb_topic_reply_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="topicId != null">topic_id = #{topicId},</if>
+            <if test="replyId != null">reply_id = #{replyId},</if>
+            <if test="reportUser != null">report_user = #{reportUser},</if>
+            <if test="reportExplain != null">report_explain = #{reportExplain},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="reportResult != null">report_result = #{reportResult},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTopicReplyReportById" parameterType="Long">
+        delete from tb_topic_reply_report where id = #{id}
+    </delete>
+
+    <delete id="deleteTopicReplyReportByIds" parameterType="String">
+        delete from tb_topic_reply_report where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateReportByHandle" parameterType="TopicReplyReportVo">
+        update tb_topic_reply_report
+        <trim prefix="SET" suffixOverrides=",">
+            status = '2',
+            <if test="reportResult != null">report_result = #{reportResult},</if>
+            <if test="resultStatus != null">result_status = #{resultStatus},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        <where>
+            status = '1'
+            <if test="replyId != null"> and reply_id = #{replyId}</if>
+            <if test="topicId != null"> and topic_id = #{topicId} and reply_id is null</if>
+        </where>
+    </update>
+</mapper>

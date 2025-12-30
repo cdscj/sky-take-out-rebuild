@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.net.wenxin.service.mapper.TopicInfoMapper">
+    
+    <resultMap type="TopicInfo" id="TopicInfoResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="topicContent"    column="topic_content"    />
+        <result property="remark"    column="remark"    />
+        <result property="status"    column="status"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTopicInfoVo">
+        select id, title, topic_content, remark, status, del_flag, create_by, create_time, update_by, update_time from tb_topic_info
+    </sql>
+
+    <select id="selectManageTopicInfoList" parameterType="TopicInfo" resultType="cn.net.wenxin.service.domain.vo.TopicDetailVo">
+         select t.*,GROUP_CONCAT(label_id) labels from
+        (select info.id,info.title,info.topic_content,info.status,
+        info.create_time,info.create_by,info.update_time,max(reply.create_time) latestReplyDate,
+        count(reply.id) replyNum,IFNULL(visit.visitNum,0) visitNum
+        from tb_topic_info info
+        left join tb_topic_reply reply
+        on info.id = reply.topic_id
+        left join (select count(id) visitNum,topic_id from tb_topic_visit GROUP BY topic_id) visit
+        on info.id = visit.topic_id
+        GROUP BY info.id) t
+        left join tb_topic_label label
+        on t.id = label.topic_id
+        <where>
+            <if test="title != null  and title != ''"> and t.title like concat('%',#{title},'%')</if>
+            <if test="topicContent != null  and topicContent != ''"> and t.topic_content like concat('%',#{topicContent},'%')</if>
+            <if test="status != null  and status != ''"> and t.status = #{status}</if>
+        </where>
+        GROUP BY t.id
+        order by t.update_time desc
+    </select>
+
+    <select id="selectTopicInfoList" resultType="cn.net.wenxin.service.domain.vo.TopicDetailVo">
+        select t.*,GROUP_CONCAT(label_id) labels from
+        (select info.id,info.title,info.topic_content,info.status,info.del_flag,
+        info.create_time,info.create_by,max(reply.create_time) latestReplyDate,
+        count(reply.id) replyNum,IFNULL(visit.visitNum,0) visitNum
+        from tb_topic_info info
+        left join tb_topic_reply reply
+        on info.id = reply.topic_id
+        left join (select count(id) visitNum,topic_id from tb_topic_visit GROUP BY topic_id) visit
+        on info.id = visit.topic_id
+        GROUP BY info.id) t
+        left join tb_topic_label label
+        on t.id = label.topic_id
+        <choose>
+            <when test="username != null and username != ''">
+                <if test="type != null">
+                    <if test="type == 1">
+                        left join tb_user_follow follow
+                        on follow.topic_id = t.id
+                        where follow.user_id = #{username}
+                        and t.status = '2' and t.del_flag='0'
+                    </if>
+                    <if test="type == 2">
+                        left join tb_topic_reply tr
+                        on tr.topic_id = t.id
+                        where tr.replyer_id = #{username}
+                        and t.status = '2' and t.del_flag='0'
+                    </if>
+                    <if test="type == 3">
+                        where t.create_by = #{username}
+                    </if>
+                    <if test="type == 4">
+                        left join tb_topic_reply_praise praise
+                        on praise.topic_id = t.id
+                        where praise.create_by = #{username}
+                        and t.status = '2' and t.del_flag='0'
+                    </if>
+                </if>
+            </when>
+            <otherwise>
+                where t.status = '2' and t.del_flag='0'
+            </otherwise>
+        </choose>
+        GROUP BY t.id
+        <trim prefix="HAVING"  prefixOverrides="AND">
+            <if test="name != null and name != '' ">
+                and (t.title like concat('%',#{name},'%')
+                or t.topic_content like concat('%',#{name},'%'))
+            </if>
+            <if test="labelId != null and labelId != ''">
+                and labels like concat('%',#{labelId},'%')
+            </if>
+        </trim>
+
+        <if test="orderIn != null">
+            order by
+            <if test="orderIn == 1">t.latestReplyDate</if>
+            <if test="orderIn == 2">t.replyNum</if>
+            <if test="orderIn == 3">t.create_time</if>
+            <if test="orderIn == 4">t.visitNum</if>
+            desc
+        </if>
+    </select>
+    
+    <select id="selectTopicInfoById" parameterType="Long" resultMap="TopicInfoResult">
+        <include refid="selectTopicInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectTopicBaseList" parameterType="String" resultType="cn.net.wenxin.service.domain.vo.TopicBaseVo">
+        SELECT id,title,topic_content
+        FROM tb_topic_info
+        where status = 2 and del_flag = '0'
+        and (title like concat('%',#{name},'%')
+        or topic_content like  concat('%',#{name},'%'))
+    </select>
+        
+    <insert id="insertTopicInfo" parameterType="TopicInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_topic_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">title,</if>
+            <if test="topicContent != null">topic_content,</if>
+            <if test="remark != null">remark,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null and title != ''">#{title},</if>
+            <if test="topicContent != null">#{topicContent},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTopicInfo" parameterType="TopicInfo">
+        update tb_topic_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="topicContent != null">topic_content = #{topicContent},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTopicInfoById" parameterType="Long">
+        update  tb_topic_info set del_flag = '2' where id = #{id}
+    </delete>
+
+    <delete id="deleteTopicInfoByIds" parameterType="String">
+        update  tb_topic_info set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

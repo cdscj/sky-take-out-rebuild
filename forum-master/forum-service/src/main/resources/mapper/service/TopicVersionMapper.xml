@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.net.wenxin.service.mapper.TopicVersionMapper">
+    
+    <resultMap type="TopicVersion" id="TopicVersionResult">
+        <result property="id"    column="id"    />
+        <result property="topicId"    column="topic_id"    />
+        <result property="type"    column="type"    />
+        <result property="auditUser"    column="audit_user"    />
+        <result property="auditTime"    column="audit_time"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="auditStatus"    column="audit_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTopicVersionVo">
+        select id, topic_id, type, audit_user, audit_time, del_flag, audit_status, create_by, create_time, update_by, update_time from tb_topic_version
+    </sql>
+
+    <select id="selectTopicVersionList" parameterType="TopicVersion" resultMap="TopicVersionResult">
+        <include refid="selectTopicVersionVo"/>
+        <where>  
+            <if test="topicId != null "> and topic_id = #{topicId}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="auditUser != null  and auditUser != ''"> and audit_user = #{auditUser}</if>
+            <if test="auditTime != null "> and audit_time = #{auditTime}</if>
+            <if test="auditStatus != null  and auditStatus != ''"> and audit_status = #{auditStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectTopicVersionById" parameterType="Long" resultMap="TopicVersionResult">
+        <include refid="selectTopicVersionVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectTopicVersionListByTopicId" parameterType="Long" resultType="cn.net.wenxin.service.domain.vo.TopicVersionVo">
+        select a.id,a.topic_id,a.type,a.create_time,
+        b.user_name,b.nick_name,b.avatar
+        from tb_topic_version a
+        left join tb_user b
+        on a.create_by = b.user_name
+        where a.topic_id = #{topicId}
+    </select>
+        
+    <insert id="insertTopicVersion" parameterType="TopicVersion" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_topic_version
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="topicId != null">topic_id,</if>
+            <if test="type != null">type,</if>
+            <if test="auditUser != null">audit_user,</if>
+            <if test="auditTime != null">audit_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="auditStatus != null">audit_status,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="topicId != null">#{topicId},</if>
+            <if test="type != null">#{type},</if>
+            <if test="auditUser != null">#{auditUser},</if>
+            <if test="auditTime != null">#{auditTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="auditStatus != null">#{auditStatus},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTopicVersion" parameterType="TopicVersion">
+        update tb_topic_version
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="topicId != null">topic_id = #{topicId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="auditUser != null">audit_user = #{auditUser},</if>
+            <if test="auditTime != null">audit_time = #{auditTime},</if>
+            <if test="delFlag != null">del_flag = #{delFlag},</if>
+            <if test="auditStatus != null">audit_status = #{auditStatus},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateTopicVersionByInfo" parameterType="TopicVersion">
+        update tb_topic_version
+        <trim prefix="SET" suffixOverrides=",">
+
+            <if test="auditUser != null">audit_user = #{auditUser},</if>
+            <if test="auditTime != null">audit_time = #{auditTime},</if>
+
+            <if test="auditStatus != null">audit_status = #{auditStatus},</if>
+
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where audit_status is null and del_flag = '0'
+        and topic_id = #{topicId}
+    </update>
+
+    <delete id="deleteTopicVersionById" parameterType="Long">
+        delete from tb_topic_version where id = #{id}
+    </delete>
+
+    <delete id="deleteTopicVersionByIds" parameterType="String">
+        delete from tb_topic_version where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
