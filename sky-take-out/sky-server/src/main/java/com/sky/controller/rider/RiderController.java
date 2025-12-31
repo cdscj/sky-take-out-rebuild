@@ -27,7 +27,7 @@ public class RiderController {
      * @return
      */
     @PostMapping("/login")
-    @ApiOperation("快递员登录")
+    @ApiOperation("骑手登录")
     public Result login(@RequestBody UserLoginDTO dto){
 
         return courierService.login(dto);
