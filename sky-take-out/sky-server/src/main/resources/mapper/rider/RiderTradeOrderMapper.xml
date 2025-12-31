@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sky.mapper.rider.RiderTradeOrderMapper">
+
+
+    <select id="confirmPickUpList" resultType="com.sky.vo.OrderDetailVO">
+        select od.name as name, od.number as number from tb_courier_trade_order tcto
+        left join orders o on tcto.order_number = o.number
+        left join order_detail od on o.id = od.order_id
+        where tcto.trade_no = #{tradeNo}
+    </select>
+
+    <select id="queryWaybillsByDate" resultType="com.sky.pojo.CourierTradeOrder">
+        select * from tb_courier_trade_order
+        <where>
+            <if test="courierId != null">and courier_id = #{courierId}</if>
+            <if test="status != null">and waybill_status = #{status}</if>
+            <if test="status == 4">
+                and trade_complete_time &gt; concat(#{today}, ' 00:00:00')
+                and trade_complete_time &lt; concat(#{today}, ' 23:59:59')
+            </if>
+            <if test="status == 5">
+                and trade_cancel_time &gt; concat(#{today}, ' 00:00:00')
+                and trade_cancel_time &lt; concat(#{today}, ' 23:59:59')
+            </if>
+        </where>
+    </select>
+    <select id="getTradeOrderCountByDateAndCount" resultType="java.lang.Integer">
+        select count(*)
+        from tb_courier_trade_order
+        where courier_id = #{courierId}
+        <if test="status != null and status == 4">
+            and trade_complete_time between concat(#{firstDayOfMonth}, ' 00:00:00')
+            and concat(#{lastDayOfMonth}, ' 23:59:59')
+        </if>
+        <if test="status != null and status == 5">
+            and trade_cancel_time between concat(#{firstDayOfMonth}, ' 00:00:00')
+            and concat(#{lastDayOfMonth}, ' 23:59:59')
+        </if>
+        and waybill_status = #{status}
+    </select>
+
+    <select id="getAvgOfCompletedTime" resultType="java.lang.Double">
+        select ifnull(AVG(TIMESTAMPDIFF(MINUTE, trade_create_time, trade_complete_time)), 0)
+        from tb_courier_trade_order
+        where trade_create_time between concat(#{firstDayOfMonth}, ' 00:00:00') and concat(#{lastDayOfMonth}, ' 23:59:59')
+          and waybill_status = 4
+        and courier_id = #{courierId}
+    </select>
+
+    <select id="getTradeOrderOnTimeRate" resultType="java.lang.Integer">
+        select count(*) from tb_courier_trade_order
+        where waybill_status = 4
+        and trade_create_time between concat(#{firstDayOfMonth}, ' 00:00:00') and concat(#{lastDayOfMonth}, ' 23:59:59')
+        and trade_complete_time &lt; customer_expected_delivery_time
+        and courier_id = #{courierId}
+    </select>
+
+    <select id="selectEveryDayOrdersCountByDateAndStatus" resultType="map">
+        select
+        <foreach collection="dateList" item="date" separator=",">
+            ifnull(MAX(case when temp.date = '${date}' then temp.total end), 0) as `${date}`
+        </foreach>
+        from (select DATE_FORMAT(trade_create_time, '%Y-%m-%d') date, count(*) as total
+        from tb_courier_trade_order
+        where trade_create_time between concat(#{firstDayOfMonth}, ' 00:00:00') and concat(#{lastDayOfMonth}, '
+        23:59:59')
+        and waybill_status = #{status}
+        and courier_id = #{courierId}
+        order by DATE_FORMAT(trade_create_time, '%Y-%m-%d')) temp
+    </select>
+
+
+</mapper>
