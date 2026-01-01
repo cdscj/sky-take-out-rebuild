@@ -4,16 +4,16 @@
     <file url="file://$PROJECT_DIR$/forum-master/sql/forum_20240830.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/forum-master/sql/quartz.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/java/com/sky/mapper/admin/CategoryMapper.java" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/java/com/sky/mapper/rider/RiderTradeOrderMapper.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/java/com/sky/mapper/rider/RiderMapper.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/java/com/sky/mapper/user/AddressBookMapper.java" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/java/com/sky/mapper/user/OrderMapper.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/java/com/sky/mapper/user/ShoppingCartMapper.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/resources/mapper/admin/CategoryMapper.xml" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/resources/mapper/rider/RiderMapper.xml" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/resources/mapper/rider/RiderTradeOrderMapper.xml" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/resources/mapper/user/AddressBookMapper.xml" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/resources/mapper/user/OrderDetailMapper.xml" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/resources/mapper/user/OrderMapper.xml" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/sky-take-out/sky-server/src/main/resources/mapper/user/ShoppingCartMapper.xml" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sky-take-out/sky.sql" dialect="MySQL" />
   </component>
 </project>

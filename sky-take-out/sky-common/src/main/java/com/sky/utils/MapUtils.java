@@ -169,6 +169,81 @@ public class MapUtils {
      * @param longitude 腾讯经度
      * @return 返回结果：经度,纬度
      */
+    /**
+     * 使用百度地图API计算骑行路线
+     * @param originLat 起点纬度
+     * @param originLng 起点经度
+     * @param destinationAddress 终点地址
+     * @return 路线信息，包含距离、预计时间和坐标点列表
+     */
+    public static Map<String, Object> calculateBicyclingRoute(double originLat, double originLng, String destinationAddress) {
+        // 首先将终点地址转换为百度坐标
+        String destinationLngLat = baiduAddressToLnglat(destinationAddress);
+        if (destinationLngLat == null) {
+            throw new RuntimeException("地址解析失败");
+        }
+        String[] destination = destinationLngLat.split(",");
+        double destLat = Double.parseDouble(destination[0]);
+        double destLng = Double.parseDouble(destination[1]);
+
+        // 构建百度地图骑行路线规划API请求URL
+        String url = String.format("%s?ak=%s&origin=%f,%f&destination=%f,%f&coord_type=wgs84ll",
+                MapConstant.BAIDU_BICYCLING_ROUTE_PALN, MapConstant.BAIDU_AK_API_KEY,
+                originLat, originLng, destLat, destLng);
+
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
+            HttpGet request = new HttpGet(url);
+            HttpResponse response = httpClient.execute(request);
+            String resultJson = EntityUtils.toString(response.getEntity());
+            JSONObject jsonObject = JSONObject.parseObject(resultJson);
+
+            if (jsonObject.getInteger("status") != 0) {
+                throw new RuntimeException("路线规划失败: " + jsonObject.getString("message"));
+            }
+
+            // 解析路线结果
+            JSONObject result = jsonObject.getJSONObject("result");
+            JSONArray routes = result.getJSONArray("routes");
+            if (routes == null || routes.size() == 0) {
+                throw new RuntimeException("未找到路线");
+            }
+
+            JSONObject route = routes.getJSONObject(0);
+            int distance = route.getInteger("distance");
+            int duration = route.getInteger("duration");
+
+            // 解析路径坐标点
+            JSONArray steps = route.getJSONArray("steps");
+            List<Map<String, Double>> points = new ArrayList<>();
+
+            for (int i = 0; i < steps.size(); i++) {
+                JSONObject step = steps.getJSONObject(i);
+                String path = step.getString("path");
+                String[] pathPoints = path.split(";");
+                
+                for (String point : pathPoints) {
+                    String[] lngLat = point.split(",");
+                    Map<String, Double> pointMap = new HashMap<>();
+                    pointMap.put("longitude", Double.parseDouble(lngLat[0]));
+                    pointMap.put("latitude", Double.parseDouble(lngLat[1]));
+                    points.add(pointMap);
+                }
+            }
+
+            // 构建返回结果
+            Map<String, Object> routeInfo = new HashMap<>();
+            routeInfo.put("distance", distance + "米");
+            routeInfo.put("duration", Math.round(duration / 60.0) + "分钟");
+            routeInfo.put("points", points);
+            routeInfo.put("destinationLatitude", destLat);
+            routeInfo.put("destinationLongitude", destLng);
+
+            return routeInfo;
+        } catch (IOException e) {
+            throw new RuntimeException("路线计算失败: " + e.getMessage());
+        }
+    }
+
     public static String map_tx2bd(double longitude, double latitude){
         double bd_lat;
         double bd_lon;

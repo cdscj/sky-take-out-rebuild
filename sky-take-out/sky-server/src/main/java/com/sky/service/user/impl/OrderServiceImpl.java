@@ -100,6 +100,9 @@ public class OrderServiceImpl implements OrderService {
         orders.setNumber(String.valueOf(System.currentTimeMillis()));
         orders.setPhone(addressBook.getPhone());
         orders.setConsignee(addressBook.getConsignee());
+        // 设置地址簿中的完整地址（省+市+区+详细地址）
+        String fullAddress = addressBook.getProvinceName() + addressBook.getCityName() + addressBook.getDistrictName() + addressBook.getDetail();
+        orders.setAddress(fullAddress);
         orders.setUserId(userId);
 
         orderMapper.insert(orders);
@@ -517,20 +520,27 @@ public class OrderServiceImpl implements OrderService {
         // 根据id查询订单
         Orders ordersDB = orderMapper.getById(id);
 
-        // 校验订单是否存在，并且状态为4
+        // 校验订单是否存在
         if (ordersDB == null ) {
             throw new OrderBusinessException(MessageConstant.ORDER_STATUS_ERROR);
         }
 
+        // 更新催单信息
+        Orders orders = new Orders();
+        orders.setId(ordersDB.getId());
+        orders.setReminderCount(ordersDB.getReminderCount() == null ? 1 : ordersDB.getReminderCount() + 1);
+        orders.setLatestReminderTime(LocalDateTime.now());
+        orders.setReminderStatus(1); // 1表示已催单
+
+        orderMapper.update(orders);
+
         Map map = new HashMap();
         map.put("type",2);
         map.put("orderId",id);
-        map.put("content","订单号:" + ordersDB.getNumber());
+        map.put("content","订单号:" + ordersDB.getNumber() + " 客户催单");
 
         //向客户端发送信息
         webSocketServer.sendToAllClient(JSON.toJSONString(map));
-
-
     }
 
 

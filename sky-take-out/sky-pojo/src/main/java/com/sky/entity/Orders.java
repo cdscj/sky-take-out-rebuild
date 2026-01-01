@@ -48,6 +48,9 @@ public class Orders implements Serializable {
     //下单用户id
     private Long userId;
 
+    //骑手用户id
+    private Long riderId;
+
     //地址id
     private Long addressBookId;
 
@@ -107,4 +110,13 @@ public class Orders implements Serializable {
 
     //餐具数量状态  1按餐量提供  0选择具体数量
     private Integer tablewareStatus;
+
+    //催单次数
+    private Integer reminderCount;
+
+    //最新催单时间
+    private LocalDateTime latestReminderTime;
+
+    //催单状态 0未催单 1已催单
+    private Integer reminderStatus;
 }
