@@ -84,9 +84,9 @@ spring:
 
 #阿里云短信配置
 aliyun:
-  accessKeyID: xxxxxxxxx
-  accessKeySecret: xxxxxxxxxxx
-  signName: 文心科技
+  accessKeyID: LTAI5tKgLb73e2C1hzGJTYUF
+  accessKeySecret: ia45nFVgfb8JZtBzurauCriLHe4re4
+  signName: cj-cds
   templateCode: SMS_xxxxxxxxxxx
 
 #邮箱相关配置

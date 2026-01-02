@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/forum")
+@RequestMapping("/dev-api/forum")
 public class ForumController extends BaseController {
 
     @Autowired

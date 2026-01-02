@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-@RequestMapping("/topic")
+@RequestMapping("/dev-api/topic")
 public class TopicController extends BaseController {
 
     @Autowired

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-@RequestMapping("/cas")
+@RequestMapping( "/dev-api/cas")
 public class CasLoginController extends BaseController {
 
     @Autowired
@@ -36,6 +36,7 @@ public class CasLoginController extends BaseController {
     @PostMapping("/login")
     public AjaxResult login(@RequestBody LoginBody loginBody) {
         AjaxResult ajax = AjaxResult.success();
+
         // 生成令牌
           String token = loginService.login(loginBody.getUsername(), loginBody.getPassword());
 //          String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE2MjYzNDEyMzQsInVzZXJJZCI6MTAwMSwicm9sZSI6IkFETUlOIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";

@@ -33,7 +33,10 @@ import cn.net.wenxin.framework.manager.AsyncManager;
 import cn.net.wenxin.framework.manager.factory.AsyncFactory;
 import cn.net.wenxin.framework.security.context.AuthenticationContextHolder;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * 登录校验方法
@@ -67,7 +70,6 @@ public class SysLoginService {
      * @return 结果
      */
     public String login(String username, String password, String code, String uuid) {
-        // 验证码校验
         validateCaptcha(username, code, uuid);
         // 登录前置校验
         loginPreCheck(username, password);

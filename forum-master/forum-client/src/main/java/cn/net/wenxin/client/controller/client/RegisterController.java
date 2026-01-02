@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-@RequestMapping("/register")
+@RequestMapping("/dev-api/register")
 public class RegisterController extends BaseController {
 
     @Autowired

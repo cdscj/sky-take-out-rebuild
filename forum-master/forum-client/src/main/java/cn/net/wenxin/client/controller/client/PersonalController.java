@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @Date 2023/8/23 14:54
  */
 @RestController
-@RequestMapping("/personal")
+@RequestMapping("/dev-api/personal")
 public class PersonalController extends BaseController {
     @Autowired
     private IUserService userService;

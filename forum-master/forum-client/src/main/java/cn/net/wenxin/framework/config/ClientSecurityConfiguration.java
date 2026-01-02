@@ -102,10 +102,23 @@ public class ClientSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // 过滤请求
                 .authorizeRequests()
                 // 对于登录login 验证码captchaImage 允许匿名访问
-                .antMatchers("/register/**").permitAll()
-                .antMatchers("/cas/**").permitAll()
+                .antMatchers("/dev-api/register/**").permitAll()
+                .antMatchers("/dev-api/cas/**").permitAll()
                 .antMatchers("/forum/**").permitAll()
-
+                .antMatchers("/dev-api/cas/**").permitAll()    // 放行代理路径
+                .antMatchers("/**/cas/login").permitAll()// 放行所有登录路径
+                .antMatchers(
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/swagger-resources/**",
+                        "/webjars/**",
+                        "/v2/api-docs",
+                        "/v3/api-docs",
+                        "/doc.html",  // Knife4j文档页面
+                        "/doc.html/**",
+                        "/error",
+                        "/favicon.ico"
+                ).permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
                 .and()

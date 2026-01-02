@@ -107,3 +107,28 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+# 在文件最后添加
+permit-all:
+  urls:
+    - /cas/login
+    - /dev-api/cas/login
+    - /cas/**
+    - /dev-api/cas/**
+    - /forum/**
+    - /register/**
+    - /test/**
+    - /swagger-ui.html
+    - /swagger-resources/**
+    - /webjars/**
+    - /v2/api-docs
+    - /druid/**
+# Knife4j 配置
+knife4j:
+  enable: true
+  setting:
+    language: zh-CN
+    enable-swagger-models: true
+    enable-document-manage: true
+    swagger-model-name: 实体类列表
+  # 生产环境需要关闭
+  production: false
