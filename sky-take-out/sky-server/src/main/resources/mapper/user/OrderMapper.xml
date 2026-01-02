@@ -44,7 +44,16 @@
                 status = #{status},
             </if>
             <if test="deliveryTime != null">
-                delivery_time = #{deliveryTime}
+                delivery_time = #{deliveryTime},
+            </if>
+            <if test="reminderCount != null">
+                reminder_count=#{reminderCount},
+            </if>
+            <if test="latestReminderTime != null">
+                latest_reminder_time=#{latestReminderTime},
+            </if>
+            <if test="reminderStatus != null">
+                reminder_status=#{reminderStatus}
             </if>
         </set>
         where id = #{id}
