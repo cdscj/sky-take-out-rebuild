@@ -1,0 +1,41 @@
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="header">
+    <image class="back-btn" src="/static/back.png" bindtap="goBack"></image>
+    <text class="title">路线详情</text>
+  </view>
+
+  <!-- 地图区域 -->
+  <view class="map-container">
+    <bmap 
+      id="map" 
+      class="map" 
+      longitude="{{currentLocation.longitude}}" 
+      latitude="{{currentLocation.latitude}}" 
+      markers="{{markers}}" 
+      polyline="{{polyline}}" 
+      show-location="true" 
+      scale="16"
+    ></bmap>
+  </view>
+
+  <!-- 路线信息 -->
+  <view class="route-info">
+    <view class="info-item">
+      <text class="label">起点:</text>
+      <text class="value">{{startAddress}}</text>
+    </view>
+    <view class="info-item">
+      <text class="label">终点:</text>
+      <text class="value">{{endAddress}}</text>
+    </view>
+    <view class="info-item">
+      <text class="label">距离:</text>
+      <text class="value">{{distance}}</text>
+    </view>
+    <view class="info-item">
+      <text class="label">预计时间:</text>
+      <text class="value">{{duration}}</text>
+    </view>
+  </view>
+</view>

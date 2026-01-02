@@ -1,0 +1,156 @@
+<view class="container">
+  <!-- 顶部导航栏 -->
+  <view class="header">
+    <text class="title">校园跑腿</text>
+    <view class="right">
+      <image class="icon" src="/static/center.png" bindtap="showRiderList"></image>
+    </view>
+  </view>
+
+  <!-- 地图区域 -->
+  <view class="map-container">
+    <map 
+      id="map" 
+      class="map" 
+      longitude="{{currentLocation.longitude}}" 
+      latitude="{{currentLocation.latitude}}" 
+      markers="{{markers}}" 
+      polyline="{{polyline}}" 
+      show-location="true" 
+      scale="16"
+      bindmarkertap="onMarkerTap"
+    ></map>
+    <view class="rider-count">
+      <text>你附近骑手数量: {{riderList.length}}</text>
+    </view>
+    <view class="location-accuracy">
+      <text>定位精度: {{locationAccuracyText}}</text>
+    </view>
+    <button class="manual-location-btn" bindtap="showManualLocationModal">手动设置位置</button>
+  </view>
+
+  <!-- 手动设置位置弹窗 -->
+  <view wx:if="{{showManualLocationModal}}" class="manual-location-overlay" bindtap="hideManualLocationModal">
+    <view class="manual-location-modal" catchtap>
+      <view class="modal-header">
+        <text>手动设置位置</text>
+        <image class="close-icon" src="/static/but_close.png" bindtap="hideManualLocationModal"></image>
+      </view>
+      <view class="modal-content">
+        <view class="location-suggestions">
+          <text class="suggestion-title">常用位置</text>
+          <view class="suggestion-list">
+            <view class="suggestion-item" bindtap="setManualLocation" data-latitude="22.593335" data-longitude="113.091089" data-address="五邑大学">
+              <text>五邑大学</text>
+            </view>
+            <view class="suggestion-item" bindtap="setManualLocation" data-latitude="22.588723" data-longitude="113.088961" data-address="江门市蓬江区人民政府">
+              <text>江门市蓬江区人民政府</text>
+            </view>
+            <view class="suggestion-item" bindtap="setManualLocation" data-latitude="22.584769" data-longitude="113.095010" data-address="江门万达广场">
+              <text>江门万达广场</text>
+            </view>
+          </view>
+        </view>
+        <view class="custom-input">
+          <text class="input-title">自定义经纬度</text>
+          <view class="input-row">
+            <text>纬度: </text>
+            <input type="number" placeholder="输入纬度" bindinput="onLatitudeInput" value="{{customLatitude}}" />
+          </view>
+          <view class="input-row">
+            <text>经度: </text>
+            <input type="number" placeholder="输入经度" bindinput="onLongitudeInput" value="{{customLongitude}}" />
+          </view>
+          <button class="confirm-btn" bindtap="confirmCustomLocation">确认设置</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 待接单列表 -->
+  <view class="order-list">
+    <view class="order-list-header">
+      <text>待接单</text>
+    </view>
+    <scroll-view scroll-y="true" class="order-scroll">
+      <view 
+        wx:for="{{orderList}}" 
+        wx:key="id" 
+        class="order-item" 
+        bindtap="viewOrderDetail" 
+        data-order-id="{{item.id}}"
+      >
+        <view class="order-info">
+          <view class="order-title">订单#{{item.number}}</view>
+          <view class="order-time">{{item.orderTime}}</view>
+        </view>
+        <view class="order-address">
+          <text class="label">地址: </text>
+          <text class="address">{{item.address}}</text>
+        </view>
+        <view class="order-amount">
+          <text class="price">¥{{item.amount}}</text>
+          <button 
+            class="accept-btn" 
+            bindtap="acceptOrder" 
+            data-order-id="{{item.id}}"
+            catchtap
+          >
+            接单
+          </button>
+          <button 
+            class="grab-btn" 
+            bindtap="grabOrder" 
+            data-order-id="{{item.id}}"
+            catchtap
+          >
+            抢单
+          </button>
+        </view>
+      </view>
+      <view wx:if="{{orderList.length === 0}}" class="empty">
+        <text>暂无待接单</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 订单详情弹窗 -->
+  <view wx:if="{{showOrderDetail}}" class="order-detail-overlay" bindtap="closeOrderDetail">
+    <view class="order-detail" catchtap>
+      <view class="detail-header">
+        <text>订单详情</text>
+        <image class="close-icon" src="/static/but_close.png" bindtap="closeOrderDetail"></image>
+      </view>
+      <view class="detail-content">
+        <view class="detail-item">
+          <text class="label">订单ID: </text>
+          <text class="value">{{selectedOrder.id}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">创建时间: </text>
+          <text class="value">{{selectedOrder.orderTime}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">地址: </text>
+          <text class="value">{{selectedOrder.address}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">金额: </text>
+          <text class="value price">¥{{selectedOrder.amount}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">状态: </text>
+          <text class="value">{{selectedOrder.status}}</text>
+        </view>
+      </view>
+      <view class="detail-footer">
+        <button class="accept-btn" bindtap="acceptOrder" data-order-id="{{selectedOrder.id}}">
+          接单
+        </button>
+        <button class="grab-btn" bindtap="grabOrder" data-order-id="{{selectedOrder.id}}">
+          抢单
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

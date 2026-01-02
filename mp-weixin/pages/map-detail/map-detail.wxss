@@ -1,0 +1,75 @@
+/* pages/map-detail/map-detail.wxss */
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 顶部导航栏 */
+.header {
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 20rpx;
+  background-color: #fff;
+  border-bottom: 1rpx solid #eee;
+  position: relative;
+}
+
+.back-btn {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+/* 地图区域 */
+.map-container {
+  flex: 1;
+  width: 100%;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+}
+
+/* 路线信息 */
+.route-info {
+  background-color: #fff;
+  padding: 20rpx;
+  border-top: 1rpx solid #eee;
+}
+
+.info-item {
+  display: flex;
+  margin-bottom: 15rpx;
+  align-items: flex-start;
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.label {
+  font-weight: 500;
+  margin-right: 20rpx;
+  width: 100rpx;
+  flex-shrink: 0;
+  font-size: 28rpx;
+}
+
+.value {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  word-break: break-all;
+}
