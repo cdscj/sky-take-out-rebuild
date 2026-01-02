@@ -99,27 +99,5 @@ public interface OrderMapper {
      */
     Integer countByMap(Map map);
 
-    /**
-     * 根据订单号修改订单状态
-     */
-    @Update("update orders set status = #{status}, number = #{orderNumber}")
-    void updateStatusByNumber(@Param("orderNumber") String orderNumber,
-                              @Param("status") Integer status);
 
-    /**
-     * 根据订单号修改送达时间和状态
-     */
-    @Update("update orders set delivery_time = #{completeTime}, status = #{status} where number = #{orderNumber}")
-    void updateStatusAndDeliveryTimeByOrderNumber(@Param("orderNumber") String orderNumber,
-                                                  @Param("completeTime") String completeTime,
-                                                  @Param("status") Integer status);
-
-
-    /**
-     * 根据运单号查询订单
-     *
-     * @param tradeNo
-     * @return
-     */
-    com.sky.pojo.Orders getByTradeNo(Long tradeNo);
 }

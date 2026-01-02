@@ -145,11 +145,6 @@
             </if>
         </where>
     </select>
-    <select id="getByTradeNo" resultType="com.sky.pojo.Orders">
-        select o.* from orders o
-        left join tb_courier_trade_order tcto on o.number = tcto.order_number
-        where tcto.trade_no = #{tradeNo}
-    </select>
 
 
 </mapper>
