@@ -132,3 +132,11 @@ knife4j:
     swagger-model-name: 实体类列表
   # 生产环境需要关闭
   production: false
+  wechat:
+    appid: wxcaebff6b98394121
+    secret:  0e84a7eb582616acc1320590139bb8de
+    mchid: 1561414331
+    mchSerialNo: 4B3B3DC35414AD50B1B755BAF8DE9CC7CF407606
+    apiV3Key: CZBK51236435wxpay435434323FFDuv3
+    notifyUrl: https://www.weixin.qq.com/wxpay/pay.php
+    refundNotifyUrl: https://www.weixin.qq.com/wxpay/pay.php

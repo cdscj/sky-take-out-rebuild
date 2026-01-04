@@ -63,8 +63,13 @@ public class TopicInfoServiceImpl implements ITopicInfoService {
     public List<TopicDetailVo> selectTopicInfoList(Integer orderIn,Long labelId,String username,Integer type,String name) {
         if(StringUtils.isBlank(username)){
             try {
-                username =  SecurityUtils.getUsername();
+                String loginUsername = SecurityUtils.getUsername();
+                // 只有获取到用户名且type不为空时才使用用户名，否则保持username为null
+                if(StringUtils.isNotBlank(loginUsername) && type != null){
+                    username = loginUsername;
+                }
             }catch (Exception e){
+                // 匿名用户，保持username为null
             }
         }
         List<TopicDetailVo> detailVos = topicInfoMapper.selectTopicInfoList(orderIn,labelId,username,type,name);

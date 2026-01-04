@@ -104,7 +104,7 @@ public class ClientSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // 对于登录login 验证码captchaImage 允许匿名访问
                 .antMatchers("/dev-api/register/**").permitAll()
                 .antMatchers("/dev-api/cas/**").permitAll()
-                .antMatchers("/forum/**").permitAll()
+                .antMatchers("/dev-api/forum/**").permitAll()
                 .antMatchers("/dev-api/cas/**").permitAll()    // 放行代理路径
                 .antMatchers("/**/cas/login").permitAll()// 放行所有登录路径
                 .antMatchers(
