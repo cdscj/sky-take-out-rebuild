@@ -1,0 +1,61 @@
+<!-- 设置页 -->
+<view class="container">
+  <!-- 个人资料 -->
+  <view class="setting-section">
+    <view class="setting-title">个人资料</view>
+    <view class="setting-item" bindtap="onEditProfile">
+      <view class="setting-left">
+        <text class="setting-text">编辑资料</text>
+      </view>
+      <view class="setting-right">
+        <text class="setting-desc">{{userInfo.userName || '未设置'}}</text>
+        <image src="/images/arrow-right.png" class="arrow-icon"></image>
+      </view>
+    </view>
+    <view class="setting-item" bindtap="onChangePassword">
+      <view class="setting-left">
+        <text class="setting-text">修改密码</text>
+      </view>
+      <view class="setting-right">
+        <image src="/images/arrow-right.png" class="arrow-icon"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 隐私与安全 -->
+  <view class="setting-section">
+    <view class="setting-title">隐私与安全</view>
+    <view class="setting-item" bindtap="onPrivacySetting">
+      <view class="setting-left">
+        <text class="setting-text">隐私设置</text>
+      </view>
+      <view class="setting-right">
+        <image src="/images/arrow-right.png" class="arrow-icon"></image>
+      </view>
+    </view>
+    <view class="setting-item" bindtap="onNotificationSetting">
+      <view class="setting-left">
+        <text class="setting-text">通知设置</text>
+      </view>
+      <view class="setting-right">
+        <image src="/images/arrow-right.png" class="arrow-icon"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 关于 -->
+  <view class="setting-section">
+    <view class="setting-title">关于</view>
+    <view class="setting-item" bindtap="onAbout">
+      <view class="setting-left">
+        <text class="setting-text">关于文心论坛</text>
+      </view>
+      <view class="setting-right">
+        <image src="/images/arrow-right.png" class="arrow-icon"></image>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <button class="logout-btn" bindtap="onLogout">退出登录</button>
+</view>

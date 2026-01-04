@@ -1,0 +1,26 @@
+<!-- 我的主题页 -->
+<view class="container">
+  <!-- 空数据提示 -->
+  <view wx:if="{{empty}}" class="empty-container">
+    <image src="/images/empty.png" class="empty-image"></image>
+    <text class="empty-text">暂无主题</text>
+    <text class="empty-subtext">快去发布你的第一个主题吧</text>
+    <button class="publish-btn" bindtap="onPublish">发布主题</button>
+  </view>
+
+  <!-- 主题列表 -->
+  <view wx:else class="topic-list">
+    <view wx:for="{{topics}}" wx:key="id" class="topic-item" bindtap="onTopicTap" data-id="{{item.id}}">
+      <view class="topic-title">{{item.title}}</view>
+      <view class="topic-content">{{item.topicContent}}</view>
+      <view class="topic-meta">
+        <text class="time">{{item.createTime}}</text>
+        <text class="reply-count">{{item.replyNum || 0}}回复</text>
+        <text class="view-count">{{item.visitNum || 0}}浏览</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view wx:if="{{hasMore && !empty}}" class="load-more">加载更多</view>
+</view>

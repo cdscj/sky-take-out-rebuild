@@ -1,0 +1,27 @@
+<!-- 发布主题页 -->
+<view class="container">
+  <!-- 标题输入 -->
+  <view class="form-group">
+    <input class="title-input" placeholder="请输入主题标题（最多50字）" bindinput="onTitleInput" value="{{title}}" maxlength="50"></input>
+    <text class="word-count">{{title.length}}/50</text>
+  </view>
+  
+  <!-- 标签输入 -->
+  <view class="form-group">
+    <text class="form-label">输入标签</text>
+    <input type="text" placeholder="请输入标签（用逗号分隔，最多3个）" bindinput="onLabelsInput" value="{{labelsText}}" class="labels-input" maxlength="50" />
+    <text class="word-count">{{labelsText.length}}/50</text>
+  </view>
+  
+  <!-- 内容输入 -->
+  <view class="form-group">
+    <text class="form-label">主题内容</text>
+    <textarea class="content-textarea" placeholder="请输入主题内容" bindinput="onContentInput" value="{{content}}" auto-height="{{true}}" maxlength="2000"></textarea>
+    <text class="word-count">{{content.length}}/2000</text>
+  </view>
+  
+  <!-- 发布按钮 -->
+  <button class="publish-btn" bindtap="onPublish" disabled="{{publishing}}">
+    {{publishing ? '发布中...' : '发布主题'}}
+  </button>
+</view>

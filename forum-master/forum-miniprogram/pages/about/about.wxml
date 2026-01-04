@@ -1,0 +1,31 @@
+<!-- 关于页 -->
+<view class="container">
+  <!-- 应用logo和名称 -->
+  <view class="app-info">
+    <image src="/images/logo.png" class="app-logo"></image>
+    <text class="app-name">{{appName}}</text>
+    <text class="app-version">版本 {{version}}</text>
+  </view>
+
+  <!-- 应用描述 -->
+  <view class="app-description">
+    {{description}}
+  </view>
+
+  <!-- 其他信息 -->
+  <view class="other-info">
+    <view class="info-item">
+      <text class="info-label">版权信息：</text>
+      <text class="info-value">{{copyright}}</text>
+    </view>
+    <view class="info-item">
+      <text class="info-label">联系方式：</text>
+      <text class="info-value">{{contact}}</text>
+    </view>
+  </view>
+
+  <!-- 底部版权 -->
+  <view class="copyright">
+    {{copyright}}
+  </view>
+</view>

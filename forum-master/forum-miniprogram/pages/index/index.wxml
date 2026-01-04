@@ -1,0 +1,45 @@
+<!-- 首页-主题列表 -->
+<view class="container">
+  <!-- 搜索框 -->
+  <view class="search-box">
+    <input type="text" placeholder="搜索话题" bindinput="onSearchInput" bindconfirm="onSearch" />
+    <image src="/images/search.png" class="search-icon" bindtap="onSearch"></image>
+  </view>
+
+  <!-- 标签筛选 -->
+  <view class="label-container">
+    <input type="text" placeholder="输入标签" bindinput="onLabelInput" value="{{labelKeyword}}" class="label-input" />
+  </view>
+
+  <!-- 排序选项 -->
+  <view class="sort-container">
+    <view wx:for="{{sortOptions}}" wx:key="id" class="sort-item {{currentSort == item.id ? 'active' : ''}}" bindtap="onSortChange" data-id="{{item.id}}">
+      {{item.name}}
+    </view>
+  </view>
+
+  <!-- 空数据提示 -->
+  <view wx:if="{{empty}}" class="empty-container">
+    <image src="/images/empty.png" class="empty-image"></image>
+    <text class="empty-text">暂无主题</text>
+    <text class="empty-subtext">快去发布第一个主题吧</text>
+  </view>
+
+  <!-- 主题列表 -->
+  <view wx:else class="topic-list">
+    <view wx:for="{{topics}}" wx:key="id" class="topic-item" bindtap="onTopicTap" data-id="{{item.id}}">
+      <view class="topic-title">{{item.title}}</view>
+      <view class="topic-content">{{item.topicContent}}</view>
+      <view class="topic-meta">
+        <image src="{{item.createUser.avatar || '/images/default-avatar.png'}}" class="avatar" mode="aspectFill"></image>
+        <text class="username">{{item.createUser.userName}}</text>
+        <text class="time">{{item.createTime}}</text>
+        <text class="reply-count">{{item.replyNum || 0}}回复</text>
+        <text class="view-count">{{item.visitNum || 0}}浏览</text>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{hasMore}}" bindtap="loadMore">加载更多</view>
+  </view>
+</view>

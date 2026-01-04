@@ -1,0 +1,88 @@
+<!-- 主题详情页 -->
+<view class="container">
+  <!-- 主题信息 -->
+  <view class="topic-info">
+    <view class="topic-title">{{topicDetail.title}}</view>
+    <view class="topic-meta">
+      <image src="{{topicDetail.createUser.avatar}}" class="avatar" mode="aspectFill"></image>
+      <text class="username">{{topicDetail.createUser.userName}}</text>
+      <text class="time">{{topicDetail.createTime}}</text>
+      <text class="visit-count">{{topicDetail.visitNum}}浏览</text>
+    </view>
+    
+    <!-- 主题标签 -->
+    <view class="topic-labels" wx:if="{{topicDetail.topicLabelVoList && topicDetail.topicLabelVoList.length > 0}}">
+      <text wx:for="{{topicDetail.topicLabelVoList}}" wx:key="id" class="label-item">{{item.labelName}}</text>
+    </view>
+    
+    <!-- 主题内容 -->
+    <view class="topic-content">{{topicDetail.topicContent}}</view>
+    
+    <!-- 操作按钮 -->
+    <view class="topic-actions">
+      <view class="action-item" bindtap="onFollowToggle">
+        <image src="{{topicDetail.follow == 1 ? '/images/followed.png' : '/images/follow.png'}}" class="action-icon"></image>
+        <text>{{topicDetail.follow == 1 ? '已关注' : '关注'}}</text>
+      </view>
+      <view class="action-item" bindtap="onPraiseToggle">
+        <image src="{{topicDetail.praise == 1 ? '/images/liked.png' : '/images/like.png'}}" class="action-icon"></image>
+        <text>{{topicDetail.praise == 1 ? '已点赞' : '点赞'}}</text>
+      </view>
+      <view class="action-item" bindtap="onShare">
+        <image src="/images/share.png" class="action-icon"></image>
+        <text>分享</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 回复列表 -->
+  <view class="reply-section">
+    <view class="reply-header">
+      <text class="reply-count">{{topicDetail.replyNum}}条回复</text>
+    </view>
+    
+    <!-- 回复输入框 -->
+    <view class="reply-input-container">
+      <input class="reply-input" placeholder="写下你的评论..." bindinput="onReplyInput" value="{{replyContent}}"></input>
+      <button class="reply-btn" bindtap="onSubmitReply">回复</button>
+    </view>
+    
+    <!-- 回复列表 -->
+    <view class="reply-list">
+      <view wx:for="{{replies}}" wx:key="id" class="reply-item">
+        <image src="{{item.replyer.avatar}}" class="reply-avatar" mode="aspectFill"></image>
+        <view class="reply-content">
+          <view class="reply-meta">
+            <text class="reply-username">{{item.replyer.userName}}</text>
+            <text class="reply-time">{{item.createTime}}</text>
+          </view>
+          <view class="reply-text">{{item.replyContent}}</view>
+          <view class="reply-actions">
+          <text class="reply-action" bindtap="onPraiseToggle" data-id="{{item.id}}" data-index="{{index}}" data-praise="{{item.praise}}">
+            <image src="{{item.praise ? '/images/liked.png' : '/images/like.png'}}" class="reply-action-icon"></image>
+            <text>{{item.praiseNum || 0}}</text>
+          </text>
+          <text class="reply-action" bindtap="onReplyTo" data-id="{{item.id}}" data-username="{{item.replyer.userName}}">
+            <image src="/images/reply.png" class="reply-action-icon"></image>
+            回复
+          </text>
+        </view>
+          
+          <!-- 子回复 -->
+          <view class="sub-replies" wx:if="{{item.subReplies && item.subReplies.length > 0}}">
+            <view wx:for="{{item.subReplies}}" wx:key="id" class="sub-reply-item">
+              <text class="sub-reply-username">{{item.replyer.userName}}</text>
+              <text class="sub-reply-text">{{item.replyContent}}</text>
+              <text class="sub-reply-time">{{item.createTime}}</text>
+            </view>
+          </view>
+          
+          <!-- 展开更多回复 -->
+          <view class="expand-replies" wx:if="{{item.hasMoreReplies}}" bindtap="onExpandReplies" data-id="{{item.id}}">
+            查看更多回复
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,32 @@
+<!-- 我的收藏页 -->
+<view class="container">
+  <!-- 空数据提示 -->
+  <view wx:if="{{empty}}" class="empty-container">
+    <image src="/images/empty.png" class="empty-image"></image>
+    <text class="empty-text">暂无收藏</text>
+    <text class="empty-subtext">快去收藏你感兴趣的主题吧</text>
+    <navigator url="/pages/index/index" class="go-home-btn">
+      去首页看看
+    </navigator>
+  </view>
+
+  <!-- 收藏列表 -->
+  <view wx:else class="favorite-list">
+    <view wx:for="{{favorites}}" wx:key="id" class="favorite-item">
+      <view class="topic-content" bindtap="onTopicTap" data-id="{{item.id}}">
+        <view class="topic-title">{{item.title}}</view>
+        <view class="topic-desc">{{item.topicContent}}</view>
+        <view class="topic-meta">
+          <text class="time">{{item.createTime}}</text>
+          <text class="reply-count">{{item.replyNum || 0}}回复</text>
+        </view>
+      </view>
+      <view class="action-btn" bindtap="onCancelFavorite" data-index="{{index}}">
+        <text class="cancel-text">取消收藏</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view wx:if="{{hasMore && !empty}}" class="load-more">加载更多</view>
+</view>

@@ -1,0 +1,77 @@
+/* 设置页样式 */
+.container {
+  padding: 20rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 设置分组 */
+.setting-section {
+  background-color: #fff;
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.setting-title {
+  padding: 20rpx 30rpx;
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+/* 设置项 */
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+}
+
+.setting-left {
+  display: flex;
+  align-items: center;
+}
+
+.setting-text {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.setting-right {
+  display: flex;
+  align-items: center;
+}
+
+.setting-desc {
+  font-size: 28rpx;
+  color: #999;
+  margin-right: 10rpx;
+}
+
+.arrow-icon {
+  width: 24rpx;
+  height: 24rpx;
+  margin-left: 10rpx;
+}
+
+/* 退出登录按钮 */
+.logout-btn {
+  margin-top: 60rpx;
+  background-color: #ff4d4f;
+  color: #fff;
+  border-radius: 30rpx;
+  padding: 25rpx;
+  font-size: 32rpx;
+  border: none;
+}
+
+.logout-btn::after {
+  border: none;
+}

@@ -1,0 +1,97 @@
+/* 关于页样式 */
+.container {
+  padding: 40rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 应用信息 */
+.app-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 60rpx;
+  padding: 60rpx 40rpx;
+  background-color: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.app-logo {
+  width: 160rpx;
+  height: 160rpx;
+  margin-bottom: 30rpx;
+  border-radius: 50%;
+  background-color: #07c160;
+}
+
+.app-name {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.app-version {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 应用描述 */
+.app-description {
+  font-size: 30rpx;
+  color: #666;
+  text-align: center;
+  line-height: 1.8;
+  margin-bottom: 60rpx;
+  padding: 40rpx;
+  background-color: #fff;
+  border-radius: 10rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+/* 其他信息 */
+.other-info {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 10rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  margin-bottom: 60rpx;
+}
+
+.info-item {
+  display: flex;
+  padding: 30rpx 40rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 30rpx;
+  color: #333;
+  margin-right: 20rpx;
+  width: 160rpx;
+}
+
+.info-value {
+  font-size: 30rpx;
+  color: #666;
+  flex: 1;
+}
+
+/* 底部版权 */
+.copyright {
+  font-size: 26rpx;
+  color: #999;
+  margin-top: auto;
+  padding: 20rpx;
+  text-align: center;
+}
