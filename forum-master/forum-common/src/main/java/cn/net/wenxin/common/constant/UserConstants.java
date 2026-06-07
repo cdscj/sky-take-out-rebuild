@@ -76,5 +76,6 @@ public class UserConstants
     public static final int PASSWORD_MIN_LENGTH = 5;
     public static final int PASSWORD_MAX_LENGTH = 20;
 
-    public static final String DEFAULT_PASSWORD = "a123456";
+    /** 默认密码，必须通过环境变量 FORUM_DEFAULT_PASSWORD 注入 */
+    public static final String DEFAULT_PASSWORD = System.getenv().getOrDefault("FORUM_DEFAULT_PASSWORD", "");
 }

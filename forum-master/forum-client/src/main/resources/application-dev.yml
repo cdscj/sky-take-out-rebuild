@@ -52,7 +52,7 @@ spring:
         url-pattern: /druid/*
         # 控制台管理用户名和密码
         login-username: forum
-        login-password: ${FORUM_DRUID_PASSWORD:123456}
+        login-password: ${FORUM_DRUID_PASSWORD}
       filter:
         stat:
           enabled: true
@@ -93,16 +93,12 @@ aliyun:
   signName: ${FORUM_ALIYUN_SIGN_NAME:cj-cds}
   templateCode: ${FORUM_ALIYUN_SMS_TEMPLATE:SMS_xxxxxxxxxxx}
 
-#邮箱相关配置
+#邮箱相关配置（敏感信息通过环境变量注入）
 email:
-  #发件人邮箱账号
-  code: xxxxx@qq.com
-  #发件人邮箱授权码
-  passWord: xxxxxxxxxxxxxxx
-  #发件邮箱主机 qq:smtp.qq.com, 163:host, 阿里：smtp.**.com
-  host: smtp.qq.com
-  #发件邮箱端口
-  port: 465
+  code: ${FORUM_EMAIL_CODE}
+  passWord: ${FORUM_EMAIL_PASSWORD}
+  host: ${FORUM_EMAIL_HOST:smtp.qq.com}
+  port: ${FORUM_EMAIL_PORT:465}
 
 file:
   #web/移动端上传文件保存目录
