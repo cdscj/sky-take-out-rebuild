@@ -71,7 +71,7 @@ public interface RiderMapper {
      * 获取所有骑手用户ID列表
      * @return 骑手用户ID列表
      */
-    @Select("SELECT id FROM user")
+    @Select("SELECT id FROM user WHERE role = 'rider'")
     List<Long> getAllRiderIds();
 
     /**

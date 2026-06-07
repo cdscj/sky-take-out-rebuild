@@ -1,30 +1,30 @@
 sky:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    host: localhost
-    port: 3306
-    database: sky_take_out
-    username: root
-    password: '08191853'
+    host: ${SKY_DB_HOST:localhost}
+    port: ${SKY_DB_PORT:3306}
+    database: ${SKY_DB_NAME:sky_take_out}
+    username: ${SKY_DB_USERNAME:root}
+    password: ${SKY_DB_PASSWORD}
   alioss:
-    endpoint: oss-cn-beijing.aliyuncs.com
-    access-key-id: LTAI5tP7fu1GbsLpoCZfbKar
-    access-key-secret: 349tbgjvplxwO4HqVQUwda5IJ2sZps
-    bucket-name: skyproject2
+    endpoint: ${SKY_OSS_ENDPOINT:oss-cn-beijing.aliyuncs.com}
+    access-key-id: ${SKY_OSS_KEY_ID}
+    access-key-secret: ${SKY_OSS_KEY_SECRET}
+    bucket-name: ${SKY_OSS_BUCKET:skyproject2}
   redis:
-    host: 192.168.150.101
-    port: 6379
-    password: '08191853'
-    database: 10
+    host: ${SKY_REDIS_HOST:192.168.150.101}
+    port: ${SKY_REDIS_PORT:6379}
+    password: ${SKY_REDIS_PASSWORD}
+    database: ${SKY_REDIS_DB:10}
   wechat:
-    appid: wxcaebff6b98394121
-    secret:  0e84a7eb582616acc1320590139bb8de
-    mchid: 1561414331
-    mchSerialNo: 4B3B3DC35414AD50B1B755BAF8DE9CC7CF407606
-    apiV3Key: CZBK51236435wxpay435434323FFDuv3
-    notifyUrl: https://www.weixin.qq.com/wxpay/pay.php
-    refundNotifyUrl: https://www.weixin.qq.com/wxpay/pay.php
+    appid: ${SKY_WECHAT_APPID}
+    secret: ${SKY_WECHAT_SECRET}
+    mchid: ${SKY_WECHAT_MCHID}
+    mchSerialNo: ${SKY_WECHAT_MCH_SERIAL_NO}
+    apiV3Key: ${SKY_WECHAT_API_V3_KEY}
+    notifyUrl: ${SKY_WECHAT_NOTIFY_URL}
+    refundNotifyUrl: ${SKY_WECHAT_REFUND_NOTIFY_URL}
   shop:
-    address: 广东省江门市蓬江区白沙街道东成村22号五邑大学
+    address: ${SKY_SHOP_ADDRESS:广东省江门市蓬江区白沙街道东成村22号五邑大学}
   baidu:
-    ak: rxC4IxXJXqNQ6oBoQ5ZR7gQfr5bC9rxT
+    ak: ${SKY_BAIDU_AK}

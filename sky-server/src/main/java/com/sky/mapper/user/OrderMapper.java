@@ -66,8 +66,35 @@ public interface OrderMapper {
      * @param orderTime
      * @return
      */
-    @Select("select * from orders where status = #{status} and order_time < #{orderTime}")
-    List<Orders> getByStatusAndOrderTimeLT(Integer status, LocalDateTime orderTime);
+    @Select("select * from orders where status = #{status} and order_time < #{orderTime} limit 500")
+    List<Orders> getByStatusAndOrderTimeLT(@Param("status") Integer status, @Param("orderTime") LocalDateTime orderTime);
+
+    /**
+     * 批量取消超时订单（单条 SQL，避免逐条 UPDATE）
+     */
+    @Update("UPDATE orders SET status = #{newStatus}, cancel_reason = #{reason}, " +
+            "cancel_time = NOW() WHERE status = #{oldStatus} AND order_time < #{time} LIMIT 500")
+    int batchCancelTimeoutOrders(@Param("oldStatus") Integer oldStatus,
+                                  @Param("newStatus") Integer newStatus,
+                                  @Param("reason") String reason,
+                                  @Param("time") LocalDateTime time);
+
+    /**
+     * 批量完成超时配送订单
+     */
+    @Update("UPDATE orders SET status = #{newStatus} " +
+            "WHERE status = #{oldStatus} AND order_time < #{time} LIMIT 500")
+    int batchCompleteDeliveryOrders(@Param("oldStatus") Integer oldStatus,
+                                     @Param("newStatus") Integer newStatus,
+                                     @Param("time") LocalDateTime time);
+
+    /**
+     * 更新订单状态并分配骑手
+     */
+    @Update("UPDATE orders SET status = #{status}, rider_id = #{riderId} WHERE id = #{id}")
+    int updateStatusAndRider(@Param("id") Long id,
+                              @Param("status") Integer status,
+                              @Param("riderId") Long riderId);
 
     /**
      * 动态条件统计营业额数据

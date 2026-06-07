@@ -15,8 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.ScanOptions;
 
 /**
  * 菜品管理
@@ -137,12 +141,24 @@ public class DishController {
     }
 
     /**
-     * 清理缓存数据
-     * @param pattern
+     * 清理缓存数据（使用 SCAN 代替 KEYS 避免阻塞 Redis）
+     * @param pattern 键匹配模式
      */
     private void cleanCache(String pattern) {
-        Set keys = redisTemplate.keys(pattern);
-        redisTemplate.delete(keys);
+        Set<String> keys = new HashSet<>();
+        try (Cursor<byte[]> cursor = redisTemplate.getConnectionFactory().getConnection()
+                .scan(ScanOptions.scanOptions().match(pattern).count(100).build())) {
+            while (cursor.hasNext()) {
+                keys.add(new String(cursor.next()));
+            }
+        } catch (Exception e) {
+            log.error("清理缓存异常, pattern={}", pattern, e);
+            return;
+        }
+        if (!keys.isEmpty()) {
+            redisTemplate.delete(keys);
+            log.debug("清理缓存 {} 个键, pattern={}", keys.size(), pattern);
+        }
     }
 
 }

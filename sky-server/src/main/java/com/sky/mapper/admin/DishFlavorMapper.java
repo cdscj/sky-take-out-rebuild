@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 @Mapper
 public interface DishFlavorMapper {
 
@@ -37,4 +39,11 @@ public interface DishFlavorMapper {
      */
     @Select("select * from dish_flavor where dish_id = #{dishId}")
     List<DishFlavor> getByDishId(Long dishId);
+
+    /**
+     * 批量根据菜品 ID 查询口味（消除 N+1）
+     */
+    @Select("<script>select * from dish_flavor where dish_id in " +
+            "<foreach item='id' collection='dishIds' open='(' separator=',' close=')'>#{id}</foreach></script>")
+    List<DishFlavor> getByDishIds(@Param("dishIds") List<Long> dishIds);
 }

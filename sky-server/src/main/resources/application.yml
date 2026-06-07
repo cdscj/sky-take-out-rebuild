@@ -6,12 +6,33 @@ spring:
     active: dev
   main:
     allow-circular-references: true
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000  # 默认缓存 TTL 1小时
   datasource:
     druid:
       driver-class-name: ${sky.datasource.driver-class-name}
-      url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true&cachePrepStmts=true&useServerPrepStmts=true&rewriteBatchedStatements=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048
       username: ${sky.datasource.username}
       password: ${sky.datasource.password}
+      # 连接池配置
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 10000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true
+          slow-sql-millis: 3000
+          merge-sql: true
   redis:
     host: ${sky.redis.host}
     port: ${sky.redis.port}
@@ -36,19 +57,19 @@ logging:
 
 sky:
   jwt:
-    # 设置jwt签名加密时使用的秘钥
-    admin-secret-key: itcast
+    # 设置jwt签名加密时使用的秘钥（生产环境必须通过环境变量覆盖）
+    admin-secret-key: ${SKY_JWT_ADMIN_SECRET:changeme}
     # 设置jwt过期时间
     admin-ttl: 7200000
     # 设置前端传递过来的令牌名称
     admin-token-name: token
-    user-secret-key: itheima
+    user-secret-key: ${SKY_JWT_USER_SECRET:changeme}
     user-ttl: 7200000
     user-token-name: authentication
   alioss:
     endpoint: ${sky.alioss.endpoint}
     access-key-id: ${sky.alioss.access-key-id}
-    access-key-secret: ${sky.access-key-secret}
+    access-key-secret: ${sky.alioss.access-key-secret}
     bucket-name: ${sky.alioss.bucket-name}
   wechat:
     appid: ${sky.wechat.appid}
@@ -59,6 +80,6 @@ sky:
     notifyUrl: ${sky.wechat.notifyUrl}
     refundNotifyUrl: ${sky.wechat.refundNotifyUrl}
   shop:
-    address: 广东省江门市蓬江区白沙街道东成村22号五邑大学
+    address: ${SKY_SHOP_ADDRESS:}
   baidu:
-    ak: rxC4IxXJXqNQ6oBoQ5ZR7gQfr5bC9rxT
+    ak: ${SKY_BAIDU_AK:}
