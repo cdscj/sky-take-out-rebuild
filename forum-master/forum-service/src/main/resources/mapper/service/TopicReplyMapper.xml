@@ -119,4 +119,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </if>
         </where>
     </select>
+
+    <select id="selectTopicReplyByIds" resultMap="TopicReplyResult">
+        SELECT id, topic_id, reply_main_id, reply_id, replyer_id, reply_content,
+               del_flag, create_by, create_time, update_by, update_time
+        FROM tb_topic_reply
+        WHERE id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

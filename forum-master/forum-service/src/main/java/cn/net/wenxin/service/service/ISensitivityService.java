@@ -65,4 +65,9 @@ public interface ISensitivityService
      * @return
      */
     public String replaceSensitivity(String str);
+
+    /**
+     * 刷新敏感词缓存（在增删改敏感词后调用）
+     */
+    public void refreshSensitivityCache();
 }

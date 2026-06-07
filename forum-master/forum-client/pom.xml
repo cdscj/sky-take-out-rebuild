@@ -71,6 +71,18 @@
             <groupId>cn.net.wenxin.forum</groupId>
             <artifactId>forum-service</artifactId>
         </dependency>
+       <!--    lombok模块-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version> <!-- 使用最新版本 -->
+            <scope>provided</scope>
+        </dependency>
+        <!-- Spring Boot WebSocket Starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
 
     </dependencies>
 

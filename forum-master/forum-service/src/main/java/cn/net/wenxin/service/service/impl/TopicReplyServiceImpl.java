@@ -1,6 +1,10 @@
 package cn.net.wenxin.service.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import cn.net.wenxin.service.domain.User;
 import cn.net.wenxin.service.domain.vo.TopicReplyVo;
@@ -114,12 +118,25 @@ public class TopicReplyServiceImpl implements ITopicReplyService
         reply.setTopicId(topicId);
         reply.setType(1);
         List<TopicReply> replyVos = topicReplyMapper.selectTopicReplyList(reply);
-        if(replyVos != null && replyVos.size() >0){
-            for (TopicReply replyVo : replyVos){
-                User user = userMapper.selectUserByUserName(replyVo.getReplyerId());
-                UserVo userVo = new UserVo();
-                BeanUtils.copyBeanProp(userVo,user);
-                replyVo.setUserVo(userVo);
+        if (replyVos != null && !replyVos.isEmpty()) {
+            // 收集所有用户名，批量查询用户信息（消除 N+1）
+            List<String> userNames = replyVos.stream()
+                    .map(TopicReply::getReplyerId)
+                    .distinct()
+                    .collect(Collectors.toList());
+            List<User> users = userMapper.selectUsersByUserNames(userNames);
+            Map<String, User> userMap = new HashMap<>();
+            for (User user : users) {
+                userMap.put(user.getUserName(), user);
+            }
+            // 组装 UserVo
+            for (TopicReply replyVo : replyVos) {
+                User user = userMap.get(replyVo.getReplyerId());
+                if (user != null) {
+                    UserVo userVo = new UserVo();
+                    BeanUtils.copyBeanProp(userVo, user);
+                    replyVo.setUserVo(userVo);
+                }
             }
         }
         return replyVos;
@@ -130,23 +147,68 @@ public class TopicReplyServiceImpl implements ITopicReplyService
         TopicReply reply = new TopicReply();
         reply.setReplyMainId(replyId);
         List<TopicReply> replyVos = topicReplyMapper.selectTopicReplyList(reply);
-        if(replyVos != null && replyVos.size() >0){
-            for (TopicReply replyVo : replyVos){
-                User user = userMapper.selectUserByUserName(replyVo.getReplyerId());
-                UserVo userVo = new UserVo();
-                BeanUtils.copyBeanProp(userVo,user);
-                replyVo.setUserVo(userVo);
-                if(replyVo.getReplyId() != null){
-                    //针对评论的回复
-                    TopicReply topicReply = topicReplyMapper.selectTopicReplyById(replyVo.getReplyId());
-                    if(topicReply != null){
-                        User ruser = userMapper.selectUserByUserName(topicReply.getReplyerId());
-                        UserVo replyUser = new UserVo();
-                        BeanUtils.copyBeanProp(replyUser,ruser);
-                        replyVo.setReplyUser(replyUser);
+        if (replyVos != null && !replyVos.isEmpty()) {
+            // 收集所有用户名和引用的回复 ID
+            List<String> userNames = new ArrayList<>();
+            List<Long> referencedReplyIds = new ArrayList<>();
+            for (TopicReply replyVo : replyVos) {
+                userNames.add(replyVo.getReplyerId());
+                if (replyVo.getReplyId() != null) {
+                    referencedReplyIds.add(replyVo.getReplyId());
+                }
+            }
+            // 批量查询用户
+            List<User> users = userMapper.selectUsersByUserNames(
+                    userNames.stream().distinct().collect(Collectors.toList()));
+            Map<String, User> userMap = new HashMap<>();
+            for (User user : users) {
+                userMap.put(user.getUserName(), user);
+            }
+            // 批量查询引用的回复
+            Map<Long, TopicReply> replyMap = new HashMap<>();
+            if (!referencedReplyIds.isEmpty()) {
+                List<TopicReply> referencedReplies = topicReplyMapper
+                        .selectTopicReplyByIds(referencedReplyIds);
+                if (referencedReplies != null) {
+                    for (TopicReply r : referencedReplies) {
+                        replyMap.put(r.getId(), r);
                     }
                 }
-
+            }
+            // 收集引用回复的作者名
+            List<String> referencedReplyUserNames = new ArrayList<>();
+            for (TopicReply r : replyMap.values()) {
+                if (r.getReplyerId() != null) {
+                    referencedReplyUserNames.add(r.getReplyerId());
+                }
+            }
+            Map<String, User> refUserMap = new HashMap<>();
+            if (!referencedReplyUserNames.isEmpty()) {
+                List<User> refUsers = userMapper.selectUsersByUserNames(
+                        referencedReplyUserNames.stream().distinct().collect(Collectors.toList()));
+                for (User u : refUsers) {
+                    refUserMap.put(u.getUserName(), u);
+                }
+            }
+            // 组装
+            for (TopicReply replyVo : replyVos) {
+                User user = userMap.get(replyVo.getReplyerId());
+                if (user != null) {
+                    UserVo userVo = new UserVo();
+                    BeanUtils.copyBeanProp(userVo, user);
+                    replyVo.setUserVo(userVo);
+                }
+                if (replyVo.getReplyId() != null) {
+                    TopicReply topicReply = replyMap.get(replyVo.getReplyId());
+                    if (topicReply != null) {
+                        User ruser = refUserMap.get(topicReply.getReplyerId());
+                        if (ruser != null) {
+                            UserVo replyUser = new UserVo();
+                            BeanUtils.copyBeanProp(replyUser, ruser);
+                            replyVo.setReplyUser(replyUser);
+                        }
+                    }
+                }
             }
         }
         return replyVos;

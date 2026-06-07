@@ -15,6 +15,9 @@ import cn.net.wenxin.common.core.domain.AjaxResult;
 import cn.net.wenxin.common.core.page.TableDataInfo;
 import cn.net.wenxin.common.utils.bean.BeanUtils;
 import cn.net.wenxin.framework.web.service.TokenService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +29,8 @@ import java.util.List;
  * @Author forum.wenxin.net.cn
  * @Date 2023/8/23 14:54
  */
-
+@Api(tags = "论坛方面")
+@Tag(name = "论坛方面",description = "论坛方面的api")
 @RestController
 @RequestMapping("/dev-api/forum")
 public class ForumController extends BaseController {
@@ -48,6 +52,7 @@ public class ForumController extends BaseController {
      *
      * @return 结果
      */
+    @ApiOperation("查看标签列表")
     @PostMapping("/label/list")
     public AjaxResult labelList(@RequestBody Label label) {
         List<Label> labels = labelService.selectLabelList(label);
@@ -63,6 +68,7 @@ public class ForumController extends BaseController {
      * @param type 类型：1我的关注主题，2我的回复主题，3我编辑的主题，4我赞过的主题
      * @return
      */
+    @ApiOperation("根据名字查询类型主题")
     @GetMapping("/topic/list")
     public TableDataInfo topicList(@RequestParam(value = "orderIn", required = false, defaultValue = "1") Integer orderIn,
                                    @RequestParam(value = "labelId", required = false) Long labelId,
@@ -79,6 +85,7 @@ public class ForumController extends BaseController {
      * @param username
      * @return
      */
+    @ApiOperation("根据名字查询用户信息")
     @GetMapping("/topic/user")
     public AjaxResult topicUser(String username) {
         User user = userService.selectUserByUserName(username);
@@ -92,6 +99,7 @@ public class ForumController extends BaseController {
      * @param name
      * @return
      */
+    @ApiOperation("顶部搜索")
     @GetMapping("/topic/searchList")
     public AjaxResult searchList(@RequestParam(value = "name", required = false) String name) {
         List<TopicBaseVo> list = topicInfoService.selectTopicBaseList(name);
@@ -104,6 +112,7 @@ public class ForumController extends BaseController {
      * @param topicId
      * @return
      */
+    @ApiOperation("根据id搜索主题详情")
     @GetMapping("/topic/detail")
     public AjaxResult topicDetail(@RequestParam Long topicId) {
         TopicDetailVo info = topicInfoService.selectTopicInfoDetail(topicId);
@@ -116,6 +125,7 @@ public class ForumController extends BaseController {
      * @param topicId
      * @return
      */
+    @ApiOperation("获取主题一级评论")
     @GetMapping("/reply/main/list")
     public TableDataInfo topicReplyMainList(@RequestParam Long topicId) {
         startPage();
@@ -129,6 +139,7 @@ public class ForumController extends BaseController {
      * @param replyId
      * @return
      */
+    @ApiOperation("获取评论下回复")
     @GetMapping("/reply/list")
     public TableDataInfo topicReplyList(@RequestParam Long replyId) {
         startPage();

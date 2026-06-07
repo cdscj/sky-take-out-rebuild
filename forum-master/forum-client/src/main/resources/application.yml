@@ -56,6 +56,23 @@ spring:
     basename: i18n/messages
   profiles:
     active: dev
+  jpa:
+    hibernate:
+      ddl-auto: ${FORUM_JPA_DDL_AUTO:none}
+    show-sql: ${FORUM_JPA_SHOW_SQL:false}
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  # WebSocket配置
+  websocket:
+    endpoint: /ws/message
+    allowed-origins: "*"
+    heartbeat-interval: 30000  # 心跳间隔30秒
+  message:
+    recall-time-limit: 120  # 撤回时间限制（秒）
+    max-message-size: 10240  # 最大消息长度
+    offline-message-ttl: 2592000  # 离线消息保存时间（秒）
   # 文件上传
   servlet:
     multipart:
@@ -72,8 +89,8 @@ spring:
 token:
   # 令牌自定义标识
   header: Authorization
-  # 令牌密钥
-  secret: abcdefghijklmnopqrstuvwxyz
+  # 令牌密钥（生产环境必须通过环境变量覆盖）
+  secret: ${FORUM_TOKEN_SECRET:changeme}
   # 令牌有效期（默认30分钟）
   expireTime: 30
 
@@ -133,10 +150,10 @@ knife4j:
   # 生产环境需要关闭
   production: false
   wechat:
-    appid: wxcaebff6b98394121
-    secret:  0e84a7eb582616acc1320590139bb8de
-    mchid: 1561414331
-    mchSerialNo: 4B3B3DC35414AD50B1B755BAF8DE9CC7CF407606
-    apiV3Key: CZBK51236435wxpay435434323FFDuv3
-    notifyUrl: https://www.weixin.qq.com/wxpay/pay.php
-    refundNotifyUrl: https://www.weixin.qq.com/wxpay/pay.php
+    appid: ${FORUM_WECHAT_APPID}
+    secret: ${FORUM_WECHAT_SECRET}
+    mchid: ${FORUM_WECHAT_MCHID}
+    mchSerialNo: ${FORUM_WECHAT_MCH_SERIAL_NO}
+    apiV3Key: ${FORUM_WECHAT_API_V3_KEY}
+    notifyUrl: ${FORUM_WECHAT_NOTIFY_URL}
+    refundNotifyUrl: ${FORUM_WECHAT_REFUND_NOTIFY_URL}

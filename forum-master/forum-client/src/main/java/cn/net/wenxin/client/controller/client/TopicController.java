@@ -5,6 +5,8 @@ import cn.net.wenxin.service.service.*;
 import cn.net.wenxin.common.core.controller.BaseController;
 import cn.net.wenxin.common.core.domain.AjaxResult;
 import cn.net.wenxin.framework.web.service.TokenService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * @Author forum.wenxin.net.cn
  * @Date 2023/8/23 14:54
  */
-
+@Api(tags = "主题方面")
 @RestController
 @RequestMapping("/dev-api/topic")
 public class TopicController extends BaseController {
@@ -38,6 +40,7 @@ public class TopicController extends BaseController {
      * @param info
      * @return
      */
+    @ApiOperation("发布主题")
     @PostMapping("/publish")
     public AjaxResult publish(@RequestBody TopicInfo info) {
         String username = tokenService.getAppUserName();
@@ -45,7 +48,7 @@ public class TopicController extends BaseController {
         info.setUpdateBy(username);
         return success(topicInfoService.insertTopicInfo(info));
     }
-
+    @ApiOperation("修改主题")
     @PostMapping("/amend")
     public AjaxResult amend(@RequestBody TopicInfo info) {
         String username = tokenService.getAppUserName();
@@ -59,6 +62,7 @@ public class TopicController extends BaseController {
      * @param id
      * @return
      */
+    @ApiOperation("撤销主题")
     @PostMapping("/cancel/{id}")
     public AjaxResult cancel(@PathVariable("id") Long id) {
         return success(topicInfoService.cancelTopicInfo(id));
@@ -70,6 +74,7 @@ public class TopicController extends BaseController {
      * @param reply
      * @return
      */
+    @ApiOperation(("回复主题或回复评论"))
     @PostMapping("/reply")
     public AjaxResult reply(@RequestBody TopicReply reply) {
         String username = tokenService.getAppUserName();
@@ -85,6 +90,7 @@ public class TopicController extends BaseController {
      * @param praise
      * @return
      */
+    @ApiOperation("用户点赞主题或评论")
     @PostMapping("/reply/praise")
     public AjaxResult replyPraise(@RequestBody TopicReplyPraise praise) {
         String username = tokenService.getAppUserName();
@@ -98,6 +104,7 @@ public class TopicController extends BaseController {
      * @param praise
      * @return
      */
+    @ApiOperation("用户取消点赞主题或评论")
     @PostMapping("/reply/unpraise")
     public AjaxResult unPraise(@RequestBody TopicReplyPraise praise) {
         String username = tokenService.getAppUserName();
@@ -110,6 +117,7 @@ public class TopicController extends BaseController {
      * @param replyReport
      * @return
      */
+    @ApiOperation("用户举报主题或评论")
     @PostMapping("/reply/report")
     public AjaxResult replyReport(@RequestBody TopicReplyReport replyReport) {
         String username = tokenService.getAppUserName();
@@ -125,13 +133,14 @@ public class TopicController extends BaseController {
      * @param follow
      * @return
      */
+    @ApiOperation("用户关注主题")
     @PostMapping("/follow")
     public AjaxResult follow(@RequestBody UserFollow follow) {
         String username = tokenService.getAppUserName();
         follow.setUserId(username);
         return success(userFollowService.insertUserFollow(follow));
     }
-
+    @ApiOperation("用户取消关注主题")
     @PostMapping("/unfollow")
     public AjaxResult unfollow(@RequestBody UserFollow follow) {
         String username = tokenService.getAppUserName();

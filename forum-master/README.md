@@ -25,38 +25,14 @@
 7. 其他论坛常用的功能。
 
 
-#### 在线体验
-
-演示地址：
-
-Web端：http://forum.wenxingz.com/web
-
-移动端：http://forum.wenxingz.com/mobile
-
-管理端：http://forum.wenxingz.com/admin
-
 #### 项目地址
 
-- gitee：https://gitee.com/e-wenxin/forum
+- 当前仓库: sky-take-out-rebuilds
 
 
-#### 联系方式
+## License
 
-QQ交流：1557715339
-
-邮箱：info@wenxingz.com
-
-开源版仅限学习交流，如需商用版本或定制请联系我们；
-
-商用版本：授权费用1万元整，包括Web端、移动端、管理端全部源码，仅限一个网站（项目）地址使用。
-
-#### 关于我们    
-
-官网： http://www.wenxingz.com
-
-天刃物联网：http://www.triot.vip
-
-文心商城：  http://mall.wenxingz.com  http://shop.wenxingz.com
+MIT License — 仅供学习交流使用。
 
 #### 演示图
 

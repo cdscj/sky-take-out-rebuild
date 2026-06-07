@@ -145,4 +145,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+    <select id="selectByUsername" parameterType="java.lang.String" resultType="cn.net.wenxin.service.domain.User">
+        SELECT id, username, password, nickname, status, online_status as onlineStatus, created_at as createdAt, updated_at as updatedAt
+        FROM user
+        WHERE username = #{username}
+    </select>
+
+    <update id="updateOnlineStatus" parameterType="map">
+        UPDATE user
+        SET online_status = #{onlineStatus}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectUsersByUserNames" resultMap="UserResult">
+        <include refid="selectUserVo"/>
+        WHERE user_name IN
+        <foreach item="name" collection="userNames" open="(" separator="," close=")">
+            #{name}
+        </foreach>
+    </select>
+
+    <select id="selectUsersByIds" resultMap="UserResult">
+        <include refid="selectUserVo"/>
+        WHERE id IN
+        <foreach item="id" collection="userIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

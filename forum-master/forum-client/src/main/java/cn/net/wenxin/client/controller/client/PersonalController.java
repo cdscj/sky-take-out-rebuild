@@ -8,6 +8,8 @@ import cn.net.wenxin.common.core.domain.model.LoginUser;
 import cn.net.wenxin.common.utils.ServletUtils;
 import cn.net.wenxin.common.utils.file.FileUploadUtils;
 import cn.net.wenxin.framework.web.service.TokenService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @Author forum.wenxin.net.cn
  * @Date 2023/8/23 14:54
  */
+@Api(tags = "用户方面")
 @RestController
 @RequestMapping("/dev-api/personal")
 public class PersonalController extends BaseController {
@@ -35,6 +38,7 @@ public class PersonalController extends BaseController {
     /**
      * 用户信息
      */
+    @ApiOperation("用户信息")
     @GetMapping("/userInfo")
     public AjaxResult userInfo() {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
@@ -42,6 +46,8 @@ public class PersonalController extends BaseController {
         return AjaxResult.success(userService.selectUserById(userId));
     }
 
+
+    @ApiOperation("根据id查询用户的信息")
     @GetMapping("/getUserInfo")
     public AjaxResult userInfo(Long userId) {
         return AjaxResult.success(userService.selectUserById(userId));
@@ -52,6 +58,7 @@ public class PersonalController extends BaseController {
      * @param userDto
      * @return
      */
+    @ApiOperation("修改个人信息")
     @PostMapping("/updateUser")
     public AjaxResult updateUser(@RequestBody UserDto userDto) {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
@@ -65,6 +72,7 @@ public class PersonalController extends BaseController {
      * @param user
      * @return
      */
+    @ApiOperation("修改密码")
     @PostMapping("/changePwd")
     public AjaxResult changePwd(@RequestBody UserDto user) {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
@@ -78,6 +86,7 @@ public class PersonalController extends BaseController {
      * @param user
      * @return
      */
+    @ApiOperation("修改邮箱")
     @PostMapping("/changeEmail")
     public AjaxResult changeEmail(@RequestBody UserDto user) {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
@@ -91,6 +100,7 @@ public class PersonalController extends BaseController {
      *
      * @return
      */
+    @ApiOperation("发送邮箱验证码")
     @PostMapping("/sendEmail")
     public AjaxResult sendEmail(@RequestBody UserDto user) {
         boolean b = userService.sendEmail(user);
@@ -105,6 +115,7 @@ public class PersonalController extends BaseController {
      * @param user
      * @return
      */
+    @ApiOperation("修改手机号码")
     @PostMapping("/changePhone")
     public AjaxResult changePhone(@RequestBody UserDto user) {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
@@ -118,6 +129,7 @@ public class PersonalController extends BaseController {
      * @param user
      * @return
      */
+    @ApiOperation("发送短信验证码")
     @PostMapping("/sendSms")
     public AjaxResult sendSms(@RequestBody UserDto user) {
         boolean b = userService.sendSms(user);
@@ -134,6 +146,7 @@ public class PersonalController extends BaseController {
      * @return
      * @throws Exception
      */
+    @ApiOperation("上传头像")
     @PostMapping("/upload/avatar")
     public AjaxResult uploadFile(MultipartFile file) throws Exception {
         try {

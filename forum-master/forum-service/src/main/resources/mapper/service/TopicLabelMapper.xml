@@ -62,4 +62,14 @@
             #{topicId}
         </foreach>
     </delete>
+
+    <select id="selectTopicLabelVoListByTopicIds" resultType="cn.net.wenxin.service.domain.vo.TopicLabelVo">
+        select a.topic_id, a.label_id, b.label_name, b.parent_id, b.label_img
+        from tb_topic_label a
+        left join tb_label b on a.label_id = b.id
+        WHERE a.topic_id IN
+        <foreach item="id" collection="topicIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

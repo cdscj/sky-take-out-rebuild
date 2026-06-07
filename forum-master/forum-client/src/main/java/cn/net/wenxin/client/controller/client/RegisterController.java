@@ -5,6 +5,7 @@ import cn.net.wenxin.common.core.domain.AjaxResult;
 import cn.net.wenxin.common.core.domain.model.RegisterBody;
 import cn.net.wenxin.common.utils.StringUtils;
 import cn.net.wenxin.framework.web.service.AppRegisterService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  * @Author forum.wenxin.net.cn
  * @Date 2023/8/23 14:54
  */
-
+@Api(tags = "用户注册")
 @RestController
 @RequestMapping("/dev-api/register")
 public class RegisterController extends BaseController {

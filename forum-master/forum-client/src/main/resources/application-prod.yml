@@ -1,14 +1,18 @@
 # 数据源配置
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.cj.jdbc.Driver
     druid:
       # 主库数据源
       master:
-        url: jdbc:mysql://127.0.0.1:3306/forum_20240830?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-        username: root
-        password: '08191853'
+        url: jdbc:mysql://${FORUM_DB_HOST:127.0.0.1}:${FORUM_DB_PORT:3306}/${FORUM_DB_NAME:forum_20240830}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&cachePrepStmts=true&useServerPrepStmts=true&rewriteBatchedStatements=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048
+        username: ${FORUM_DB_USERNAME:root}
+        password: ${FORUM_DB_PASSWORD}
       # 从库数据源
       slave:
         # 从数据源开关/默认关闭
@@ -17,7 +21,7 @@ spring:
         username:
         password:
       # 初始连接数
-      initialSize: 5
+      initialSize: 10
       # 最小连接池数量
       minIdle: 10
       # 最大连接池数量
@@ -35,7 +39,7 @@ spring:
       # 配置一个连接在池中最大生存的时间，单位是毫秒
       maxEvictableIdleTimeMillis: 900000
       # 配置检测连接是否有效
-      validationQuery: SELECT 1 FROM DUAL
+      validationQuery: SELECT 1
       testWhileIdle: true
       testOnBorrow: false
       testOnReturn: false
@@ -48,7 +52,7 @@ spring:
         url-pattern: /druid/*
         # 控制台管理用户名和密码
         login-username: forum
-        login-password: 123456
+        login-password: ${FORUM_DRUID_PASSWORD}
       filter:
         stat:
           enabled: true
@@ -68,7 +72,7 @@ spring:
     # 数据库索引
     database: 1
     # 密码
-    password: '08191853'
+    password: ${FORUM_REDIS_PASSWORD}
     # 连接超时时间
     timeout: 600s
     lettuce:

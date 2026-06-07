@@ -1,7 +1,11 @@
 package cn.net.wenxin.service.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import cn.net.wenxin.service.domain.*;
 import cn.net.wenxin.service.domain.vo.*;
@@ -73,19 +77,42 @@ public class TopicInfoServiceImpl implements ITopicInfoService {
             }
         }
         List<TopicDetailVo> detailVos = topicInfoMapper.selectTopicInfoList(orderIn,labelId,username,type,name);
-        if(detailVos != null && detailVos.size() > 0){
-            for (TopicDetailVo detailVo : detailVos){
+        if (detailVos != null && !detailVos.isEmpty()) {
+            // 收集所有话题 ID 和用户名
+            List<Long> topicIds = detailVos.stream()
+                    .map(TopicDetailVo::getId).distinct().collect(Collectors.toList());
+            List<String> userNames = detailVos.stream()
+                    .map(TopicDetailVo::getCreateBy).filter(n -> n != null).distinct()
+                    .collect(Collectors.toList());
+            // 批量查询标签
+            List<TopicLabelVo> allLabels = topicLabelMapper.selectTopicLabelVoListByTopicIds(topicIds);
+            Map<Long, List<TopicLabelVo>> labelMap = new HashMap<>();
+            if (allLabels != null) {
+                for (TopicLabelVo lv : allLabels) {
+                    labelMap.computeIfAbsent(lv.getTopicId(), k -> new ArrayList<>()).add(lv);
+                }
+            }
+            // 批量查询用户
+            List<User> users = userMapper.selectUsersByUserNames(userNames);
+            Map<String, User> userMap = new HashMap<>();
+            if (users != null) {
+                for (User u : users) {
+                    userMap.put(u.getUserName(), u);
+                }
+            }
+            // 组装
+            for (TopicDetailVo detailVo : detailVos) {
                 detailVo.setTitle(sensitivityService.replaceSensitivity(detailVo.getTitle()));
                 detailVo.setTopicContent(sensitivityService.replaceSensitivity(detailVo.getTopicContent()));
-                //组装标签等扩展信息
-                List<TopicLabelVo> labelVos = topicLabelMapper.selectTopicLabelVoList(detailVo.getId());
-                detailVo.setTopicLabelVoList(labelVos);
-                User user = userMapper.selectUserByUserName(detailVo.getCreateBy());
-                UserVo userVo = new UserVo();
-                BeanUtils.copyBeanProp(userVo,user);
-                detailVo.setCreateUser(userVo);
-                Date  latestReplyDate = detailVo.getLatestReplyDate();
-                if(latestReplyDate != null){
+                detailVo.setTopicLabelVoList(labelMap.getOrDefault(detailVo.getId(), new ArrayList<>()));
+                User user = userMap.get(detailVo.getCreateBy());
+                if (user != null) {
+                    UserVo userVo = new UserVo();
+                    BeanUtils.copyBeanProp(userVo, user);
+                    detailVo.setCreateUser(userVo);
+                }
+                Date latestReplyDate = detailVo.getLatestReplyDate();
+                if (latestReplyDate != null) {
                     detailVo.setLatestReplyDateName(DateHelper.getPastTime(latestReplyDate));
                 }
             }
@@ -102,12 +129,20 @@ public class TopicInfoServiceImpl implements ITopicInfoService {
     @Override
     public List<TopicDetailVo> selectManageTopicInfoList(TopicInfo topicInfo)
     {
-        List<TopicDetailVo> detailVos =  topicInfoMapper.selectManageTopicInfoList(topicInfo);
-        if(detailVos != null && detailVos.size() > 0){
-            for (TopicDetailVo detailVo : detailVos){
-                //组装标签等扩展信息
-                List<TopicLabelVo> labelVos = topicLabelMapper.selectTopicLabelVoList(detailVo.getId());
-                detailVo.setTopicLabelVoList(labelVos);
+        List<TopicDetailVo> detailVos = topicInfoMapper.selectManageTopicInfoList(topicInfo);
+        if (detailVos != null && !detailVos.isEmpty()) {
+            // 批量查询所有话题的标签
+            List<Long> topicIds = detailVos.stream()
+                    .map(TopicDetailVo::getId).distinct().collect(Collectors.toList());
+            List<TopicLabelVo> allLabels = topicLabelMapper.selectTopicLabelVoListByTopicIds(topicIds);
+            Map<Long, List<TopicLabelVo>> labelMap = new HashMap<>();
+            if (allLabels != null) {
+                for (TopicLabelVo lv : allLabels) {
+                    labelMap.computeIfAbsent(lv.getTopicId(), k -> new ArrayList<>()).add(lv);
+                }
+            }
+            for (TopicDetailVo detailVo : detailVos) {
+                detailVo.setTopicLabelVoList(labelMap.getOrDefault(detailVo.getId(), new ArrayList<>()));
             }
         }
         return detailVos;

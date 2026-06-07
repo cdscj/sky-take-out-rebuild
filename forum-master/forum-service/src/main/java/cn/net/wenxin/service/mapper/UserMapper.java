@@ -1,7 +1,9 @@
 package cn.net.wenxin.service.mapper;
 
 import java.util.List;
+
 import cn.net.wenxin.service.domain.User;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 用户信息Mapper接口
@@ -18,6 +20,9 @@ public interface UserMapper
      * @return 用户信息
      */
     public User selectUserById(Long id);
+
+    public User selectByUsername(String username);
+    public int updateOnlineStatus(Long id, Integer onlineStatus);
 
     /**
      * 查询用户信息列表
@@ -88,4 +93,19 @@ public interface UserMapper
      * @return 结果
      */
     public User checkEmailUnique(String email);
+
+    /**
+     * 批量按用户名查询用户（用于消除 N+1 查询）
+     * @param userNames 用户名列表
+     * @return 用户列表
+     */
+    public List<User> selectUsersByUserNames(@Param("userNames") List<String> userNames);
+
+    /**
+     * 批量按 ID 查询用户
+     * @param userIds 用户 ID 列表
+     * @return 用户列表
+     */
+    public List<User> selectUsersByIds(@Param("userIds") List<Long> userIds);
+
 }

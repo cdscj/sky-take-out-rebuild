@@ -37,6 +37,22 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private UserPointsMapper userPointsMapper;
 
+    @Override
+    public User getUserByUsername(String username) {
+        return userMapper.selectByUsername(username);
+    }
+
+    @Override
+    public boolean isUserValid(Long userId) {
+        User user = userMapper.selectUserById(userId);
+        return user != null && user.getStatus().equals(0);
+    }
+
+    @Override
+    public void updateOnlineStatus(Long userId, Integer onlineStatus) {
+        userMapper.updateOnlineStatus(userId, onlineStatus);
+    }
+
     /**
      * 查询用户信息
      *

@@ -12,6 +12,13 @@ import cn.net.wenxin.service.domain.UserDto;
  */
 public interface IUserService 
 {
+
+
+
+
+    User getUserByUsername(String username);
+    boolean isUserValid(Long userId);
+    void updateOnlineStatus(Long userId, Integer onlineStatus);
     /**
      * 查询用户信息
      * 

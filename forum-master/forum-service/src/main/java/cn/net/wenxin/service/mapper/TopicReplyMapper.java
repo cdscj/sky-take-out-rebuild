@@ -1,8 +1,10 @@
 package cn.net.wenxin.service.mapper;
 
 import java.util.List;
+
 import cn.net.wenxin.service.domain.TopicReply;
 import cn.net.wenxin.service.domain.vo.TopicReplyVo;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 主题回复记录Mapper接口
@@ -61,4 +63,9 @@ public interface TopicReplyMapper
     public int deleteTopicReplyByIds(Long[] ids);
 
     public List<TopicReplyVo> selectTopicReplyVoList(TopicReplyVo replyVo);
+
+    /**
+     * 批量按 ID 查询回复（用于消除 N+1 查询）
+     */
+    public List<TopicReply> selectTopicReplyByIds(@Param("ids") List<Long> ids);
 }

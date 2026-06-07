@@ -99,12 +99,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             where status = '0' and del_flag = '0'
             <if test="id != null  and id != ''"> and id = #{id}</if>
             <if test="pointsMin != null ">
-                and points_min &gt;= #{pointsMin}
-                and points_max &lt;= #{pointsMin}
+                and points_min &lt;= #{pointsMin}
+                and points_max &gt;= #{pointsMin}
             </if>
             <if test="pointsMax != null ">
-                and points_min &gt;= #{pointsMax}
-                and points_max &lt;= #{pointsMax}
+                and points_min &lt;= #{pointsMax}
+                and points_max &gt;= #{pointsMax}
             </if>
             order by update_time desc
             limit 1

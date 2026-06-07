@@ -1,8 +1,10 @@
 package cn.net.wenxin.service.mapper;
 
 import java.util.List;
+
 import cn.net.wenxin.service.domain.TopicLabel;
 import cn.net.wenxin.service.domain.vo.TopicLabelVo;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 主题标签Mapper接口
@@ -61,4 +63,9 @@ public interface TopicLabelMapper
     public int deleteTopicLabelByTopicIds(Long[] topicIds);
 
     List<TopicLabelVo> selectTopicLabelVoList(Long topicId);
+
+    /**
+     * 批量按话题 ID 查询标签（用于消除 N+1 查询）
+     */
+    List<TopicLabelVo> selectTopicLabelVoListByTopicIds(@Param("topicIds") List<Long> topicIds);
 }
