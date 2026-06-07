@@ -18,6 +18,12 @@ import java.util.Map;
 @Slf4j
 public class MapController {
 
+    private final MapUtils mapUtils;
+
+    public MapController(MapUtils mapUtils) {
+        this.mapUtils = mapUtils;
+    }
+
     /**
      * 计算骑行路线
      * @param params 包含起点坐标和终点地址的参数
@@ -32,7 +38,7 @@ public class MapController {
             String destinationAddress = params.get("destinationAddress").toString();
 
             // 调用地图工具类计算路线
-            Map<String, Object> routeInfo = MapUtils.calculateBicyclingRoute(originLatitude, originLongitude, destinationAddress);
+            Map<String, Object> routeInfo = mapUtils.calculateBicyclingRoute(originLatitude, originLongitude, destinationAddress);
 
             return Result.success(routeInfo);
         } catch (Exception e) {

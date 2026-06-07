@@ -81,5 +81,8 @@ sky:
     refundNotifyUrl: ${sky.wechat.refundNotifyUrl}
   shop:
     address: ${SKY_SHOP_ADDRESS:}
+  map:
+    gaode-api-key: ${SKY_GAODE_API_KEY}
+    baidu-ak: ${SKY_BAIDU_AK}
   baidu:
     ak: ${SKY_BAIDU_AK:}

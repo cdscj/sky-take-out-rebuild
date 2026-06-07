@@ -28,3 +28,6 @@ sky:
     address: ${SKY_SHOP_ADDRESS:广东省江门市蓬江区白沙街道东成村22号五邑大学}
   baidu:
     ak: ${SKY_BAIDU_AK}
+  map:
+    gaode-api-key: ${SKY_GAODE_API_KEY}
+    baidu-ak: ${SKY_BAIDU_AK}

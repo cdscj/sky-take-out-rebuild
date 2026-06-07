@@ -3,13 +3,16 @@ package com.sky.utils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sky.constant.MapConstant;
+import com.sky.properties.MapProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -20,7 +23,31 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Component
 public class MapUtils {
+
+    private static MapProperties staticMapProperties;
+
+    private final MapProperties mapProperties;
+
+    public MapUtils(MapProperties mapProperties) {
+        this.mapProperties = mapProperties;
+    }
+
+    @PostConstruct
+    public void init() {
+        staticMapProperties = this.mapProperties;
+    }
+
+    /** 高德 API Key（兼容旧静态调用） */
+    private static String getGaodeApiKey() {
+        return staticMapProperties != null ? staticMapProperties.getGaodeApiKey() : null;
+    }
+
+    /** 百度 AK（兼容旧静态调用） */
+    private static String getBaiduAk() {
+        return staticMapProperties != null ? staticMapProperties.getBaiduAk() : null;
+    }
 
 
     /**
@@ -33,7 +60,7 @@ public class MapUtils {
            double  endLat = Double.parseDouble(endGeo.split(",")[1]);
 
             String url = String.format("%s?key=%s&origins=%f,%f&destination=%f,%f", MapConstant.GAODE_DISTANCE_URL,
-                    MapConstant.GAODE_AMAP_API_KEY, startLng, startLat, endLng, endLat);
+                    getGaodeApiKey(), startLng, startLat, endLng, endLat);
 
             try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
                 HttpGet request = new HttpGet(url);
@@ -60,7 +87,7 @@ public class MapUtils {
         double  endLat = Double.parseDouble(endGeo.split(",")[1]);
 
         String url = String.format("%s?key=%s&origins=%f,%f&destination=%f,%f", MapConstant.GAODE_DISTANCE_URL,
-                MapConstant.GAODE_AMAP_API_KEY, startLng, startLat, endLng, endLat);
+                getGaodeApiKey(), startLng, startLat, endLng, endLat);
         url = url+"&type=0";
 
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
@@ -86,7 +113,7 @@ public class MapUtils {
 
       public static String  addressToLnglat(String address){
           String url = String.format("%s?key=%s&address=%s",
-                  MapConstant.GAODE_GEO_URL, MapConstant.GAODE_AMAP_API_KEY,address);
+                  MapConstant.GAODE_GEO_URL, getGaodeApiKey(),address);
           try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
               HttpGet request = new HttpGet(url);
               HttpResponse response = httpClient.execute(request);
@@ -118,7 +145,7 @@ public class MapUtils {
     public  static String  LngLatToAddress(String  location){
         String  url = "https://restapi.amap.com/v3/geocode/regeo?" +
                 "output=JSON&location="+location+"&key="+
-                MapConstant.GAODE_AMAP_API_KEY+"&extensions=all";
+                getGaodeApiKey()+"&extensions=all";
         try (
                 CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
             HttpGet request = new HttpGet(url);
@@ -144,7 +171,7 @@ public class MapUtils {
      */
     public  static  String   otherLngLatChangeToGaodeLngLat(String location,String coordsys){
         String  url ="https://restapi.amap.com/v3/assistant/coordinate/convert?" +
-                "locations="+location+"&coordsys="+coordsys+"&output=JSON&key="+MapConstant.GAODE_AMAP_API_KEY;
+                "locations="+location+"&coordsys="+coordsys+"&output=JSON&key="+getGaodeApiKey();
         try (
                 CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
             HttpGet request = new HttpGet(url);
@@ -188,7 +215,7 @@ public class MapUtils {
 
         // 构建百度地图骑行路线规划API请求URL
         String url = String.format("%s?ak=%s&origin=%f,%f&destination=%f,%f&coord_type=wgs84ll",
-                MapConstant.BAIDU_BICYCLING_ROUTE_PALN, MapConstant.BAIDU_AK_API_KEY,
+                MapConstant.BAIDU_BICYCLING_ROUTE_PALN, getBaiduAk(),
                 originLat, originLng, destLat, destLng);
 
         try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
@@ -260,7 +287,7 @@ public class MapUtils {
     }
 
       public  static  String baiduAddressToLnglat(String address){
-            String  params = "?address="+address+"&output=json&ak="+MapConstant.BAIDU_AK_API_KEY;
+            String  params = "?address="+address+"&output=json&ak="+getBaiduAk();
           try (
                   CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
               HttpGet request = new HttpGet(MapConstant.BAIDU_GEO_URL+params);
@@ -282,7 +309,7 @@ public class MapUtils {
 
     public  static  Integer   baoiduTwoPointCostTime(String startAddress,String endAddress){
        Map map = new HashMap();
-       map.put("ak",MapConstant.BAIDU_AK_API_KEY);
+       map.put("ak",getBaiduAk());
        map.put("origin",baiduAddressToLnglat(startAddress));
        map.put("destination",baiduAddressToLnglat(endAddress));
         String resultJSON = HttpClientUtil.doGet(MapConstant.BAIDU_BICYCLING_ROUTE_PALN, map);
@@ -301,7 +328,7 @@ public class MapUtils {
 // show_fields=cost,polyline
     public  static  Map<String,String>  gaodeTwoPointCostDistanceAndTime(String startAddress,String endAddress){
         Map map = new HashMap();
-        map.put("key",MapConstant.GAODE_AMAP_API_KEY);
+        map.put("key",getGaodeApiKey());
         map.put("origin",addressToLnglat(startAddress));
         map.put("destination",addressToLnglat(endAddress));
         map.put("show_fields","cost,polyline");
@@ -333,7 +360,7 @@ public class MapUtils {
 
     public  static  Map<String,String>  gaodeTwoPointCostDistanceAndTimeByAddress(String startAddress,String endAddress){
         Map map = new HashMap();
-        map.put("key",MapConstant.GAODE_AMAP_API_KEY);
+        map.put("key",getGaodeApiKey());
         map.put("origin",addressToLnglat(startAddress));
         map.put("destination",addressToLnglat(endAddress));
         map.put("show_fields","cost,polyline");
@@ -372,7 +399,7 @@ public class MapUtils {
 // show_fields=cost,polyline
     public  static  Map<String,String>  gaodeTwoPointCostDistanceAndTimeByLngLat(String startLngLat,String endLngLat){
         Map map = new HashMap();
-        map.put("key",MapConstant.GAODE_AMAP_API_KEY);
+        map.put("key",getGaodeApiKey());
         map.put("origin",startLngLat);
         map.put("destination",endLngLat);
         map.put("show_fields","cost,polyline");
